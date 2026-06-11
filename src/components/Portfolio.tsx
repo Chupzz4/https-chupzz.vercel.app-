@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { portfolio } from "@/lib/content";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const accentMap = {
   cyan: "from-cyan/30 to-cyan/5 text-cyan",
@@ -14,6 +15,8 @@ const accentMap = {
 };
 
 export function Portfolio() {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   return (
     <section id="work" className="relative overflow-hidden bg-ink px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -21,7 +24,7 @@ export function Portfolio() {
           <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-cyan">Portfolio</p>
             <h2 className="max-w-3xl text-balance text-3xl font-semibold text-white sm:text-4xl lg:text-5xl">
-              SSample Portfolio Projects 
+              Sample Portfolio Projects
             </h2>
           </div>
           <p className="max-w-md text-sm leading-7 text-slate-300">
@@ -38,11 +41,14 @@ export function Portfolio() {
               viewport={{ once: true, margin: "-70px" }}
               transition={{ duration: 0.62, delay: index * 0.06 }}
               className={cn(
-                "group min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-white/6 backdrop-blur transition hover:-translate-y-1 hover:border-cyan/40 hover:shadow-glow",
+                "group min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-white/6 backdrop-blur transition hover:-translate-y-1 hover:border-cyan/40 hover:shadow-glow cursor-pointer",
                 index < 2 ? "lg:col-span-2" : "lg:col-span-1"
               )}
+              onClick={() => item.image && setSelectedIndex(index)}
             >
-              <div className={cn("relative h-40 overflow-hidden rounded-t-lg bg-gradient-to-br", accentMap[item.accent as keyof typeof accentMap])}>
+              <div 
+                className={cn("relative h-40 overflow-hidden rounded-t-lg bg-gradient-to-br", accentMap[item.accent as keyof typeof accentMap])}
+              >
                 {item.image ? (
                   <Image
                     src={item.image}
@@ -50,7 +56,7 @@ export function Portfolio() {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     priority={false}
-                    className="object-cover"
+                    className="object-cover transition duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <div className="absolute inset-5 rounded-lg border border-white/15 bg-ink/55 p-4 shadow-blue-glow">
@@ -86,6 +92,37 @@ export function Portfolio() {
           ))}
         </div>
       </div>
+
+      {selectedIndex !== null && portfolio[selectedIndex]?.image && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          onClick={() => setSelectedIndex(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            className="relative max-h-[90vh] max-w-4xl w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={portfolio[selectedIndex].image}
+              alt="Expanded portfolio image"
+              width={1200}
+              height={800}
+              priority
+              className="h-auto w-full rounded-lg object-contain"
+            />
+            <button
+              onClick={() => setSelectedIndex(null)}
+              className="absolute -top-12 right-0 text-white hover:text-cyan transition"
+              aria-label="Close image"
+            >
+              <X size={32} />
+            </button>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 }

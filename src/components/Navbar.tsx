@@ -22,7 +22,7 @@ export function Navbar() {
             <span className="h-2.5 w-2.5 rounded-full bg-cyan shadow-[0_0_18px_rgba(34,211,238,.85)]" />
           </span>
           <span className="text-sm font-semibold tracking-normal text-white">
-            Tech VA<span className="text-cyan">.</span>AI
+            Christian Capistrano
           </span>
         </a>
 

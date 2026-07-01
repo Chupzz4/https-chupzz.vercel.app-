@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarCheck, Menu, Send, X } from "lucide-react";
+import { CalendarCheck, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { navItems } from "@/lib/content";
@@ -39,13 +39,6 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
-          <a
-            href="mailto:hello@example.com"
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-white/12 px-4 text-sm font-medium text-slate-200 transition hover:border-cyan/50 hover:text-white"
-          >
-            <Send size={16} />
-            Message
-          </a>
           <a
             href="https://calendly.com/capistranochristianpaul/30min"
             target="_blank"

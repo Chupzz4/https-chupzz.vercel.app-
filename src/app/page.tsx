@@ -1,5 +1,6 @@
 import { About } from "@/components/About";
 import { Benefits } from "@/components/Benefits";
+import { Carousel } from "@/components/Carousel";
 import { CTA } from "@/components/CTA";
 import { GsapEffects } from "@/components/GsapEffects";
 import { Hero } from "@/components/Hero";
@@ -19,6 +20,7 @@ export default function Home() {
       <Services />
       <Benefits />
       <Process />
+      <Carousel />
       <Portfolio />
       <Testimonials />
       <CTA />

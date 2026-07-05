@@ -10,20 +10,21 @@ const tools = [
   "Calendly.png",
   "Claude.png",
   "Clay.png",
-  "ClickUP.png",
-  "GHL.png",
+  "ClickUp.png",
+  "GoHighLevel.png",
   "Github.png",
   "Lovable.png",
-  "n8n.png",
-  "OtterAI.png",
+  "N8N.png",
+  "Otter AI.png",
   "Relume.png",
-  "RingCentral.png",
+  "Ring Central.png",
   "Salesforce.png",
   "Spline.png",
   "Supabase.png",
   "Webflow.png",
   "Zapier.png",
-  "VS Studio.png",
+  "VS code.png",
+  "Chat GPT.png",
 ];
 
 export function Carousel() {
@@ -95,12 +96,12 @@ export function Carousel() {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="absolute flex items-center justify-center"
                 >
-                  <div className="relative w-40 h-40 rounded-xl overflow-hidden border border-cyan/20">
+                  <div className="relative w-40 h-40 rounded-xl overflow-hidden">
                     <Image
-                      src={`/images/${tools[currentIndex]}`}
+                      src={`/images/${encodeURIComponent(tools[currentIndex])}`}
                       alt={tools[currentIndex]}
                       fill
-                      className="object-contain rounded-xl"
+                      className="object-contain rounded-none"
                       priority
                     />
                   </div>
@@ -108,31 +109,28 @@ export function Carousel() {
               </AnimatePresence>
 
               {/* Side Preview Images */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 opacity-30">
-               <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-cyan/20">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4">
+               <div className="relative w-24 h-24 overflow-hidden">
                  <Image
-                   src={`/images/${tools[visibleIndices[1]]}`}
+                   src={`/images/${encodeURIComponent(tools[visibleIndices[1]])}`}
                    alt="previous"
                    fill
-                   className="object-contain rounded-xl"
+                   className="object-contain rounded-none"
                  />
                </div>
               </div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 opacity-30">
-               <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-cyan/20">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4">
+               <div className="relative w-24 h-24 overflow-hidden">
                  <Image
-                   src={`/images/${tools[visibleIndices[3]]}`}
+                   src={`/images/${encodeURIComponent(tools[visibleIndices[3]])}`}
                    alt="next"
                    fill
-                   className="object-contain rounded-xl"
+                   className="object-contain rounded-none"
                  />
                </div>
               </div>
             </div>
 
-            {/* Gradient Overlays */}
-            <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-ink to-transparent pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-ink to-transparent pointer-events-none" />
           </div>
 
           {/* Navigation Buttons */}

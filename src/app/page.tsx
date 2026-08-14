@@ -13,17 +13,22 @@ import { Testimonials } from "@/components/Testimonials";
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-ink text-white">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <GsapEffects />
       <Navbar />
-      <Hero />
-      <About />
-      <Services />
-      <Benefits />
-      <Process />
-      <Carousel />
-      <Portfolio />
-      <Testimonials />
-      <CTA />
+      <div id="main-content" tabIndex={-1}>
+        <Hero />
+        <About />
+        <Services />
+        <Benefits />
+        <Process />
+        <Carousel />
+        <Portfolio />
+        <Testimonials />
+        <CTA />
+      </div>
     </main>
   );
 }

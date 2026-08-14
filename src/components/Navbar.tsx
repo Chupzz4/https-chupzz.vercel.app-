@@ -52,7 +52,9 @@ export function Navbar() {
 
         <button
           type="button"
-          aria-label="Toggle navigation"
+          aria-label={open ? "Close navigation" : "Open navigation"}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
           onClick={() => setOpen((value) => !value)}
           className="grid h-10 w-10 place-items-center rounded-md border border-white/12 text-white md:hidden"
         >
@@ -61,10 +63,15 @@ export function Navbar() {
       </nav>
 
       <div
+        id="mobile-nav"
         className={cn(
           "grid overflow-hidden border-t border-white/10 bg-ink/92 transition-[grid-template-rows] duration-300 md:hidden",
-          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          // grid-rows-[0fr] collapses the panel visually but leaves its links in
+          // the tab order and readable by screen readers. invisible + aria-hidden
+          // takes them out until the menu is actually open.
+          open ? "grid-rows-[1fr]" : "invisible grid-rows-[0fr]"
         )}
+        aria-hidden={!open}
       >
         <div className="min-h-0">
           <div className="space-y-2 px-4 py-4">
@@ -73,6 +80,7 @@ export function Navbar() {
                 key={item}
                 href={`#${item.toLowerCase()}`}
                 onClick={() => setOpen(false)}
+                tabIndex={open ? undefined : -1}
                 className="block rounded-md px-3 py-3 text-sm text-slate-200 hover:bg-white/8"
               >
                 {item}

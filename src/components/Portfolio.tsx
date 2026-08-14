@@ -5,7 +5,7 @@ import { ArrowUpRight, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { portfolio } from "@/lib/content";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 
 const accentMap = {
   cyan: "from-cyan/30 to-cyan/5 text-cyan",
@@ -32,7 +32,9 @@ export function Portfolio() {
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        {/* 6 columns so 5 cards tile flush: a 3+3 feature row over a 2+2+2 row.
+            At 5 columns the second row filled only 2 of 5, leaving a visible hole. */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
           {portfolio.map((item, index) => (
             <motion.article
               key={item.title}
@@ -42,9 +44,25 @@ export function Portfolio() {
               transition={{ duration: 0.62, delay: index * 0.06 }}
               className={cn(
                 "group min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-white/6 backdrop-blur transition hover:-translate-y-1 hover:border-cyan/40 hover:shadow-glow cursor-pointer",
-                index < 2 ? "lg:col-span-2" : "lg:col-span-1"
+                index < 2 ? "lg:col-span-3" : "lg:col-span-2",
+                index === portfolio.length - 1 && portfolio.length % 2 === 1 && "md:col-span-2"
               )}
               onClick={() => item.image && setSelectedIndex(index)}
+              // The card opens a lightbox on click, so it needs to be reachable
+              // and operable from the keyboard, not just the mouse.
+              {...(item.image
+                ? {
+                    role: "button",
+                    tabIndex: 0,
+                    "aria-label": `${item.title} — open preview`,
+                    onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setSelectedIndex(index);
+                      }
+                    }
+                  }
+                : {})}
             >
               <div 
                 className={cn("relative h-40 overflow-hidden rounded-t-lg bg-gradient-to-br", accentMap[item.accent as keyof typeof accentMap])}

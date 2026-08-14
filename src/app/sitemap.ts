@@ -1,41 +1,14 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next";
+import { siteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://capistranochristianpaul.com'
+  const lastModified = new Date();
 
-  // Main pages
-  const pages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/#about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#services`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#work`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/#cta`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-  ]
-
-  return pages
+  return [
+    { url: siteUrl, lastModified, changeFrequency: "weekly", priority: 1.0 },
+    { url: `${siteUrl}/#about`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${siteUrl}/#services`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${siteUrl}/#work`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/#cta`, lastModified, changeFrequency: "weekly", priority: 0.7 }
+  ];
 }

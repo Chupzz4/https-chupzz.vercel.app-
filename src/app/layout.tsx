@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { WebVitals } from "@/components/WebVitals";
+import { absoluteUrl, siteConfig, siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({ 
@@ -10,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://capistranochristianpaul.com'),
+  metadataBase: new URL(siteUrl),
   title: "Premium Tech VA & AI Automation Specialist | Christian Capistrano",
   description:
     "Technical Virtual Assistant specializing in AI automation, website development, sales funnels, lead generation, CRM automation, n8n integrations, and GoHighLevel systems. Build scalable business automation.",
@@ -58,14 +59,15 @@ export const metadata: Metadata = {
     "max-video-preview": -1
   },
   alternates: {
-    canonical: "https://capistranochristianpaul.com"
+    canonical: siteUrl
   },
-  verification: {
-    google: "add-your-google-verification-code",
-    other: {
-      "msvalidate.01": "add-your-bing-verification-code"
-    }
+  icons: {
+    icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }]
   }
+  // `verification` intentionally omitted: it previously shipped the literal
+  // strings "add-your-google-verification-code" / "add-your-bing-verification-code".
+  // Add it back with real tokens from Search Console / Bing Webmaster Tools.
 };
 
 export const viewport: Viewport = {
@@ -103,22 +105,33 @@ export default function RootLayout({
           type="application/ld+json"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
+            // Only verifiable facts belong here. The previous version published a
+            // placeholder telephone ("+1-XXX-XXX-XXXX") and three sameAs profile
+            // URLs that were never confirmed to exist — bad structured data is
+            // worse than none. Add sameAs back once the real profiles are known.
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "Christian Capistrano - Tech VA & AI Automation",
-              url: "https://capistranochristianpaul.com",
-              logo: "https://capistranochristianpaul.com/logo.png",
-              description: "Technical Virtual Assistant specializing in AI automation, website development, and business systems",
-              sameAs: [
-                "https://linkedin.com/in/christiancapistrano",
-                "https://twitter.com/capistranochristian",
-                "https://github.com/capistrano"
+              "@type": "Person",
+              name: siteConfig.name,
+              url: siteUrl,
+              image: absoluteUrl("/logo.png"),
+              jobTitle: siteConfig.title,
+              email: `mailto:${siteConfig.email}`,
+              description:
+                "Technical Virtual Assistant specializing in AI automation, website development, and business systems",
+              knowsAbout: [
+                "AI Automation",
+                "n8n",
+                "GoHighLevel",
+                "CRM Automation",
+                "Sales Funnels",
+                "Lead Generation"
               ],
               contactPoint: {
                 "@type": "ContactPoint",
-                telephone: "+1-XXX-XXX-XXXX",
                 contactType: "Customer Service",
+                email: siteConfig.email,
+                url: siteConfig.calendly,
                 availableLanguage: ["en"]
               }
             })

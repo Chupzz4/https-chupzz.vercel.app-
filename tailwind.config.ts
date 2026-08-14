@@ -1,9 +1,17 @@
 import type { Config } from "tailwindcss";
 
+// Tailwind's default opacity scale only steps by 5, so modifiers already used in
+// the markup — bg-white/6, bg-ink/58, border-white/14 — silently compile to
+// nothing. Widen it to every integer 0-100; JIT still only emits what's used.
+const opacity = Object.fromEntries(
+  Array.from({ length: 101 }, (_, value) => [String(value), String(value / 100)])
+);
+
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
+      opacity,
       colors: {
         navy: "#0F172A",
         electric: "#3B82F6",

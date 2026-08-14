@@ -16,6 +16,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Clears the 4rem fixed header so anchor targets don't land underneath it. */
+  scroll-padding-top: 5.5rem;
   background: #020617;
 }
 

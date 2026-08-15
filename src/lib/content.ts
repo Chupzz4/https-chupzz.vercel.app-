@@ -3,6 +3,7 @@ import {
   CalendarCheck,
   ChartNoAxesCombined,
   Code2,
+  Crosshair,
   DatabaseZap,
   FileStack,
   Filter,
@@ -16,12 +17,21 @@ import {
   Sparkles,
   TimerReset,
   Workflow,
-  Zap
+  Zap,
+  type LucideIcon
 } from "lucide-react";
 
 export const navItems = ["Services", "Process", "Work", "Results"];
 
-export const services = [
+type Service = {
+  icon: LucideIcon;
+  title: string;
+  copy: string;
+  featured?: boolean;
+  toolLogo?: { src: string; name: string };
+};
+
+export const services: Service[] = [
   {
     icon: Globe2,
     title: "Website Development",
@@ -51,6 +61,14 @@ export const services = [
     icon: Headset,
     title: "Virtual Assistant Support",
     copy: "Technical execution for busy operators who need reliable support across systems, updates, workflows, and launches."
+  },
+  {
+    icon: Crosshair,
+    title: "GTM Engineering",
+    copy:
+      "Clay-powered go-to-market systems: ICP list building, waterfall enrichment, AI research agents, intent and hiring signals, lead scoring, and personalized outbound that writes itself. Clay becomes the data engine, then everything syncs into your CRM, sequencer, and n8n workflows so sales works the right accounts at the right time.",
+    featured: true,
+    toolLogo: { src: "/images/Clay.png", name: "Clay" }
   }
 ];
 
@@ -151,6 +169,8 @@ export const testimonials = [
 ];
 
 export const stackTags = [
+  "Clay",
+  "GTM Engineering",
   "n8n",
   "GoHighLevel",
   "Zapier",

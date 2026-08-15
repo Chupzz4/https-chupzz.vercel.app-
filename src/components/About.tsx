@@ -14,8 +14,8 @@ export function About() {
           </h2>
           <p className="mt-5 text-pretty text-base leading-8 text-slate-300">
             I help founders, agencies, contractors, and service businesses connect the systems that drive growth:
-            websites, funnels, AI automation, CRM pipelines, lead generation workflows, appointment booking, and
-            follow-up operations.
+            websites, funnels, AI automation, CRM pipelines, GTM engineering with Clay, lead generation workflows,
+            appointment booking, and follow-up operations.
           </p>
           <p className="mt-4 text-pretty text-base leading-8 text-slate-300">
             The goal is simple: build a clean digital engine that captures demand, keeps every lead moving, and gives

@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   keywords: [
     "Technical Virtual Assistant",
     "AI Automation Specialist",
+    "GTM Engineer",
+    "Clay GTM Engineering",
+    "Clay.com Expert",
+    "Outbound Automation",
+    "Lead Enrichment",
     "n8n Integrations",
     "GoHighLevel Funnels",
     "CRM Automation",
@@ -118,8 +123,12 @@ export default function RootLayout({
               jobTitle: siteConfig.title,
               email: `mailto:${siteConfig.email}`,
               description:
-                "Technical Virtual Assistant specializing in AI automation, website development, and business systems",
+                "Technical Virtual Assistant and GTM Engineer specializing in Clay-powered go-to-market systems, AI automation, website development, and business systems",
               knowsAbout: [
+                "GTM Engineering",
+                "Clay",
+                "Lead Enrichment",
+                "Outbound Automation",
                 "AI Automation",
                 "n8n",
                 "GoHighLevel",

@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { ArrowRight, CalendarCheck, ChevronDown, Eye, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { heroStats, stackTags } from "@/lib/content";
@@ -79,7 +80,32 @@ export function Hero() {
           </div>
         </motion.div>
 
-        <div className="hidden min-h-[520px] lg:block" aria-hidden="true" />
+        {/* christian-portrait.webp is Christian.webp cropped to its opaque
+            bounds (728x1297 of the original 1414x2000). The source had two
+            thirds of its pixels in transparent padding, which left roughly 173
+            real pixels spanning a 672px-wide paint - hence the soft render. */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          className="relative hidden min-h-[520px] items-center justify-center lg:flex"
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,.22)_0%,rgba(34,211,238,.08)_38%,transparent_68%)] blur-2xl"
+          />
+          <div className="relative aspect-[728/1297] w-full max-w-[300px] overflow-hidden rounded-2xl shadow-[0_28px_60px_rgba(2,6,23,.65)] ring-1 ring-white/12 xl:max-w-[336px]">
+            <Image
+              src="/images/christian-portrait.webp"
+              alt="Christian Capistrano, Tech VA and AI automation specialist"
+              fill
+              priority
+              quality={90}
+              sizes="(min-width: 1280px) 336px, 300px"
+              className="object-cover"
+            />
+          </div>
+        </motion.div>
       </div>
 
       <a

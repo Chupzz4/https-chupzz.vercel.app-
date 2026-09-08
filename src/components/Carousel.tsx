@@ -101,10 +101,10 @@ export function Carousel() {
                   <div className="relative w-40 h-40 rounded-xl overflow-hidden">
                     <Image
                       src={`/images/${encodeURIComponent(tools[currentIndex])}`}
-                      alt={tools[currentIndex]}
+                      alt={tools[currentIndex].replace(".png", "")}
                       fill
+                      sizes="160px"
                       className="object-contain rounded-none"
-                      priority
                     />
                   </div>
                 </motion.div>
@@ -115,8 +115,10 @@ export function Carousel() {
                <div className="relative w-24 h-24 overflow-hidden">
                  <Image
                    src={`/images/${encodeURIComponent(tools[visibleIndices[1]])}`}
-                   alt="previous"
+                   alt=""
+                   aria-hidden="true"
                    fill
+                   sizes="96px"
                    className="object-contain rounded-none"
                  />
                </div>
@@ -125,8 +127,10 @@ export function Carousel() {
                <div className="relative w-24 h-24 overflow-hidden">
                  <Image
                    src={`/images/${encodeURIComponent(tools[visibleIndices[3]])}`}
-                   alt="next"
+                   alt=""
+                   aria-hidden="true"
                    fill
+                   sizes="96px"
                    className="object-contain rounded-none"
                  />
                </div>
@@ -152,22 +156,29 @@ export function Carousel() {
           </button>
 
           {/* Dots Navigation */}
-          <div className="mt-6 flex justify-center gap-2">
-            {tools.map((_, index) => (
-              <motion.button
-                key={index}
+          <div className="mt-6 flex flex-wrap justify-center gap-1">
+            {tools.map((tool, index) => (
+              <button
+                key={tool}
+                type="button"
+                aria-label={`Show ${tool.replace(".png", "")}`}
+                aria-current={index === currentIndex ? "true" : undefined}
                 onClick={() => {
                   setDirection(index > currentIndex ? 1 : -1);
                   setCurrentIndex(index);
                   setAutoplay(false);
                   setTimeout(() => setAutoplay(true), 8000);
                 }}
-                className={`h-2 rounded-full transition-all ${
-                  index === currentIndex
-                    ? "bg-cyan w-8"
-                    : "bg-white/20 w-2 hover:bg-white/40"
-                }`}
-              />
+                className="group/dot grid h-6 min-w-6 place-items-center px-1"
+              >
+                <span
+                  className={`block h-2 rounded-full transition-all ${
+                    index === currentIndex
+                      ? "w-8 bg-cyan"
+                      : "w-2 bg-white/20 group-hover/dot:bg-white/40"
+                  }`}
+                />
+              </button>
             ))}
           </div>
 
@@ -176,7 +187,7 @@ export function Carousel() {
             <p className="text-sm font-semibold text-cyan">
               {tools[currentIndex].replace(".png", "")}
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-300 mt-1">
               {currentIndex + 1} / {tools.length}
             </p>
           </div>

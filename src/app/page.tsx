@@ -2,7 +2,7 @@ import { About } from "@/components/About";
 import { Benefits } from "@/components/Benefits";
 import { Carousel } from "@/components/Carousel";
 import { CTA } from "@/components/CTA";
-import { GsapEffects } from "@/components/GsapEffects";
+import { ScanlineOverlay } from "@/components/ScanlineOverlay";
 import { Hero } from "@/components/Hero";
 import { Navbar } from "@/components/Navbar";
 import { Portfolio } from "@/components/Portfolio";
@@ -16,7 +16,7 @@ export default function Home() {
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <GsapEffects />
+      <ScanlineOverlay />
       <Navbar />
       <div id="main-content" tabIndex={-1}>
         <Hero />

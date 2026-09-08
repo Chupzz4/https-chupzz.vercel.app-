@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { ArrowRight, CalendarCheck, ChevronDown, Eye, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
 import { heroStats, stackTags } from "@/lib/content";
 
 const HeroNebula = dynamic(() => import("@/components/HeroNebula"), {
@@ -11,11 +11,55 @@ const HeroNebula = dynamic(() => import("@/components/HeroNebula"), {
   loading: () => <NebulaFallback />
 });
 
+// A fragment shader doing seven fbm passes per pixel is fine on any real GPU
+// and hopeless on a software rasteriser: under SwiftShader it pins the main
+// thread for tens of seconds. Headless auditors (Lighthouse, PageSpeed) run
+// exactly that way, and so do some VMs and remote desktops. Those viewers keep
+// the static gradient; nobody gets a background that costs them the page.
+function hasHardwareWebGL(): boolean {
+  try {
+    const canvas = document.createElement("canvas");
+    const gl =
+      canvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true }) ??
+      canvas.getContext("webgl", { failIfMajorPerformanceCaveat: true });
+    if (!gl) return false;
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return !/swiftshader|llvmpipe|softpipe|software|mesa offscreen|basic render/i.test(renderer);
+  } catch {
+    return false;
+  }
+}
+
 export function Hero() {
+  // The nebula is decoration: three.js + the shader are ~150 KB that have no
+  // business on the critical path. Hold the static fallback until the browser
+  // is idle, so hydration and the LCP paint happen before the chunk is even
+  // requested. rAF-in-idle keeps the swap off the same frame as other work.
+  const [showNebula, setShowNebula] = useState(false);
+  useEffect(() => {
+    let raf = 0;
+    const start = () => {
+      if (!hasHardwareWebGL()) return;
+      raf = requestAnimationFrame(() => setShowNebula(true));
+    };
+    // Safari still lacks requestIdleCallback; a short timeout stands in.
+    const hasIdle = typeof window.requestIdleCallback === "function";
+    const handle = hasIdle
+      ? window.requestIdleCallback(start, { timeout: 2500 })
+      : window.setTimeout(start, 1200);
+    return () => {
+      cancelAnimationFrame(raf);
+      if (hasIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, []);
+
   return (
     <section id="home" className="relative isolate min-h-screen overflow-hidden bg-ink pt-16">
       <div className="absolute inset-0 z-0">
-        <HeroNebula />
+        {showNebula ? <HeroNebula /> : <NebulaFallback />}
       </div>
       <div className="absolute inset-0 z-[1] hidden bg-[linear-gradient(90deg,rgba(2,6,23,.96)_0%,rgba(2,6,23,.78)_42%,rgba(2,6,23,.28)_100%)] md:block" />
       <div className="absolute inset-x-0 bottom-0 z-[1] h-40 bg-gradient-to-t from-ink to-transparent" />
@@ -24,12 +68,7 @@ export function Hero() {
       <div className="absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(2,6,23,.88)_0%,rgba(2,6,23,.58)_48%,rgba(2,6,23,.80)_100%)] md:hidden" />
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.02fr_.98fr] lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-3xl"
-        >
+        <div className="hero-rise max-w-3xl">
           <div className="mb-5 inline-flex items-center gap-2 rounded-md border border-cyan/30 bg-cyan/10 px-3 py-2 text-xs font-medium text-cyan shadow-glow">
             <ShieldCheck size={15} />
             Premium Tech VA & AI Automation Specialist
@@ -78,18 +117,13 @@ export function Hero() {
               </span>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* christian-portrait.webp is Christian.webp cropped to its opaque
             bounds (728x1297 of the original 1414x2000). The source had two
             thirds of its pixels in transparent padding, which left roughly 173
             real pixels spanning a 672px-wide paint - hence the soft render. */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="relative hidden min-h-[520px] items-center justify-center lg:flex"
-        >
+        <div className="hero-portrait-in relative hidden min-h-[520px] items-center justify-center lg:flex">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,.22)_0%,rgba(34,211,238,.08)_38%,transparent_68%)] blur-2xl"
@@ -101,11 +135,11 @@ export function Hero() {
               fill
               priority
               quality={90}
-              sizes="(min-width: 1280px) 336px, 300px"
+              sizes="(min-width: 1280px) 336px, (min-width: 1024px) 300px, 16px"
               className="object-cover"
             />
           </div>
-        </motion.div>
+        </div>
       </div>
 
       <a

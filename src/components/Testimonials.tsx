@@ -37,7 +37,7 @@ export function Testimonials() {
               <p className="text-pretty text-xl leading-9 text-white sm:text-2xl">&quot;{active.quote}&quot;</p>
               <div className="mt-8 border-t border-white/10 pt-6">
                 <div className="font-semibold text-white">{active.name}</div>
-                <div className="mt-1 text-sm text-slate-400">{active.role}</div>
+                <div className="mt-1 text-sm text-slate-300">{active.role}</div>
               </div>
             </motion.div>
           </AnimatePresence>

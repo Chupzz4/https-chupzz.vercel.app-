@@ -67,7 +67,9 @@ export const metadata: Metadata = {
     canonical: siteUrl
   },
   icons: {
-    icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
+    // The 512px icon is 155 KiB and every visit downloaded it for a 16px tab
+    // slot; a 192px derivative is a few KiB and still crisp on a 4x display.
+    icon: [{ url: "/icon-192.png", type: "image/png", sizes: "192x192" }],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }]
   }
   // `verification` intentionally omitted: it previously shipped the literal
@@ -95,13 +97,10 @@ export default function RootLayout({
         <meta name="format-detection" content="date=no" />
         <meta name="format-detection" content="address=no" />
         <meta name="format-detection" content="email=no" />
-        {/* Preconnect to external domains for performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://calendly.com" />
-        {/* DNS Prefetch for analytics and third parties */}
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        {/* No resource hints: next/font self-hosts Inter, so the Google Fonts
+            preconnects opened two connections that nothing used; no analytics
+            is installed; and Calendly now loads on scroll, well after this
+            matters. Each hint here is a wasted socket on a phone. */}
       </head>
       <body className={inter.className}>
         <WebVitals />

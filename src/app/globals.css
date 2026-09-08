@@ -7,7 +7,6 @@
 
 :root {
   color-scheme: dark;
-  --scan-y: 0%;
 }
 
 * {
@@ -75,64 +74,66 @@ a:focus-visible {
   outline-offset: 3px;
 }
 
+/* The sweep used to be a GSAP tween writing --scan-y onto :root every frame.
+   A custom property on :root invalidates style for the whole document, so each
+   frame was a full-page style recalc plus a full-viewport blended repaint, and
+   it never stopped: Lighthouse measured 134 s of blocking time on mobile from
+   that one tween. The beam is now a transform-only keyframe on its own layer,
+   which the compositor animates without touching the main thread. */
 .scanline {
-  background:
-    linear-gradient(
-      to bottom,
-      transparent calc(var(--scan-y) - 8%),
-      rgba(34, 211, 238, 0.12) var(--scan-y),
-      transparent calc(var(--scan-y) + 8%)
-    ),
-    repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5px);
-  mix-blend-mode: screen;
+  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5px);
+  overflow: hidden;
 }
 
-.matrix-rain {
+.scanline::after {
+  content: "";
   position: absolute;
-  inset: -15%;
-  opacity: 0.56;
-  background-image:
-    linear-gradient(180deg, rgba(34, 211, 238, 0.28), transparent 70%),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 26px,
-      rgba(34, 211, 238, 0.32) 27px,
-      transparent 29px,
-      transparent 52px
-    ),
-    repeating-linear-gradient(
-      180deg,
-      transparent 0 14px,
-      rgba(59, 130, 246, 0.24) 15px,
-      transparent 17px,
-      transparent 36px
-    );
-  filter: drop-shadow(0 0 18px rgba(34, 211, 238, 0.32));
-  transform: rotate(-12deg) scale(1.08);
+  left: 0;
+  right: 0;
+  top: -16%;
+  height: 16%;
+  background: linear-gradient(to bottom, transparent, rgba(34, 211, 238, 0.12), transparent);
+  animation: scan-sweep 8s linear infinite;
+  will-change: transform;
 }
 
-.matrix-rain::before {
-  content: "01001 11010 00101 10110 01101 10010 01011 11100 00110 10101";
-  position: absolute;
-  inset: 8% 0 auto 8%;
-  width: 92%;
-  color: rgba(34, 211, 238, 0.8);
-  font:
-    700 18px/2 ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace;
-  letter-spacing: 0.16em;
-  text-shadow: 0 0 18px rgba(34, 211, 238, 0.75);
-  word-spacing: 1.8rem;
+@keyframes scan-sweep {
+  to {
+    transform: translateY(725%);
+  }
 }
 
-@media (max-width: 640px) {
-  .matrix-rain::before {
-    font-size: 14px;
-    word-spacing: 0.8rem;
+/* Entrance motion for the above-the-fold pieces. These animate transform only:
+   the framer-motion versions started at opacity 0, which kept the hero copy -
+   the LCP element - invisible until hydration and cost ~1.7 s of render delay
+   on mobile. Opacity is never touched, so first paint is the LCP paint. */
+.hero-rise {
+  animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-portrait-in {
+  animation: hero-portrait-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+.nav-drop {
+  animation: nav-drop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-rise {
+  from {
+    transform: translateY(30px);
+  }
+}
+
+@keyframes hero-portrait-in {
+  from {
+    transform: scale(0.94);
+  }
+}
+
+@keyframes nav-drop {
+  from {
+    transform: translateY(-28px);
   }
 }
 

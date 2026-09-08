@@ -4,7 +4,7 @@ const nextConfig = {
   compress: true,
   productionBrowserSourceMaps: false,
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion", "gsap"],
+    optimizePackageImports: ["lucide-react", "framer-motion"],
   },
   headers: async () => [
     {
@@ -33,7 +33,9 @@ const nextConfig = {
       ]
     },
     {
-      source: "/public/:path*",
+      // Files in public/ are served from the site root, so the old "/public/"
+      // pattern never matched anything. Match the asset paths themselves.
+      source: "/:path(images/.*|.*\.(?:png|webp|ico|svg|woff2))",
       headers: [
         {
           key: "Cache-Control",

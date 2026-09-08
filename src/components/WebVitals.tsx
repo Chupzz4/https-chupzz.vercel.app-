@@ -5,6 +5,9 @@ import { useEffect } from 'react';
 // Report Web Vitals to Google Analytics
 export function WebVitals() {
   useEffect(() => {
+    // Console diagnostics only. In production the 'event' observer below ran
+    // on every interaction and the logs served nobody.
+    if (process.env.NODE_ENV !== 'development') return;
     // Send a simple performance mark to demonstrate tracking
     if ('PerformanceObserver' in window) {
       try {

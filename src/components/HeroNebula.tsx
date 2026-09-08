@@ -24,6 +24,7 @@ const FRAGMENT_SHADER = /* glsl */ `
   uniform float uTime;
   uniform float uPeriod;
   uniform float uAspect;
+  uniform int uOctaves;
 
   varying vec2 vUv;
 
@@ -50,6 +51,7 @@ const FRAGMENT_SHADER = /* glsl */ `
     float amplitude = 0.5;
     mat2 rot = mat2(0.80, 0.60, -0.60, 0.80);
     for (int i = 0; i < 6; i++) {
+      if (i >= uOctaves) break;
       value += amplitude * noise(p);
       p = rot * p * 2.02;
       amplitude *= 0.5;
@@ -146,17 +148,23 @@ const FRAGMENT_SHADER = /* glsl */ `
   }
 `;
 
-function Nebula({ animate }: { animate: boolean }) {
+function Nebula({ animate, octaves }: { animate: boolean; octaves: number }) {
   const { viewport, size } = useThree();
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: LOOP_SECONDS * 0.25 },
       uPeriod: { value: LOOP_SECONDS },
-      uAspect: { value: 1 }
+      uAspect: { value: 1 },
+      uOctaves: { value: octaves }
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  useEffect(() => {
+    uniforms.uOctaves.value = octaves;
+  }, [octaves, uniforms]);
 
   useEffect(() => {
     uniforms.uAspect.value = size.width / Math.max(size.height, 1);
@@ -189,12 +197,16 @@ export default function HeroNebula() {
   const [onScreen, setOnScreen] = useState(true);
   const [tabVisible, setTabVisible] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [lowPower, setLowPower] = useState(false);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
     const sync = () => setReducedMotion(query.matches);
     sync();
     query.addEventListener("change", sync);
+    // Seven fbm passes per fragment is fine on a laptop GPU and brutal on a
+    // phone's. Render at 1x there; the scrim over it hides the softness.
+    setLowPower(window.matchMedia("(max-width: 1023px), (pointer: coarse)").matches);
     return () => query.removeEventListener("change", sync);
   }, []);
 
@@ -223,12 +235,15 @@ export default function HeroNebula() {
     <div ref={wrapper} className="h-full w-full">
       <Canvas
         camera={{ position: [0, 0, 1], fov: 50 }}
-        dpr={[1, 1.5]}
+        dpr={lowPower ? 1 : [1, 1.5]}
         frameloop={animate ? "always" : "demand"}
         gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
       >
         <color attach="background" args={["#020617"]} />
-        <Nebula animate={animate} />
+        {/* Four octaves on phones: the coarse detail carries the look, and the
+            two finest octaves are 40% of the per-pixel cost for grain the scrim
+            hides anyway. */}
+        <Nebula animate={animate} octaves={lowPower ? 4 : 6} />
       </Canvas>
     </div>
   );

@@ -36,7 +36,7 @@ export function Portfolio() {
             At 5 columns the second row filled only 2 of 5, leaving a visible hole. */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
           {portfolio.map((item, index) => (
-            <motion.article
+            <motion.div
               key={item.title}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -106,7 +106,7 @@ export function Portfolio() {
                   {item.metric}
                 </div>
               </div>
-            </motion.article>
+            </motion.div>
           ))}
         </div>
       </div>

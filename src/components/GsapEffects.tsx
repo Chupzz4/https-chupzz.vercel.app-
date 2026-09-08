@@ -12,13 +12,6 @@ export function GsapEffects() {
         repeat: -1,
         ease: "none"
       });
-
-      gsap.to(".matrix-rain", {
-        backgroundPositionY: "900px",
-        duration: 18,
-        repeat: -1,
-        ease: "none"
-      });
     });
 
     return () => context.revert();

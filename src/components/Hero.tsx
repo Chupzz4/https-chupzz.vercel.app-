@@ -5,24 +5,22 @@ import { ArrowRight, CalendarCheck, ChevronDown, Eye, ShieldCheck } from "lucide
 import { motion } from "framer-motion";
 import { heroStats, stackTags } from "@/lib/content";
 
-const HeroNumberSystem = dynamic(() => import("@/components/HeroNumberSystem"), {
+const HeroNebula = dynamic(() => import("@/components/HeroNebula"), {
   ssr: false,
-  loading: () => <CyberFallback />
+  loading: () => <NebulaFallback />
 });
 
 export function Hero() {
   return (
-    <section id="home" className="relative isolate min-h-screen overflow-hidden bg-radial-grid pt-16">
+    <section id="home" className="relative isolate min-h-screen overflow-hidden bg-ink pt-16">
       <div className="absolute inset-0 z-0">
-        <div className="hidden h-full md:block">
-          <HeroNumberSystem />
-        </div>
-        <div className="h-full md:hidden">
-          <CyberFallback />
-        </div>
+        <HeroNebula />
       </div>
-      <div className="absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(2,6,23,.96)_0%,rgba(2,6,23,.78)_42%,rgba(2,6,23,.28)_100%)]" />
+      <div className="absolute inset-0 z-[1] hidden bg-[linear-gradient(90deg,rgba(2,6,23,.96)_0%,rgba(2,6,23,.78)_42%,rgba(2,6,23,.28)_100%)] md:block" />
       <div className="absolute inset-x-0 bottom-0 z-[1] h-40 bg-gradient-to-t from-ink to-transparent" />
+      {/* The horizontal scrim only clears the copy on wide layouts; stacked
+          phone layouts need a vertical one to keep the headline legible. */}
+      <div className="absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(2,6,23,.88)_0%,rgba(2,6,23,.58)_48%,rgba(2,6,23,.80)_100%)] md:hidden" />
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.02fr_.98fr] lg:px-8">
         <motion.div
@@ -95,11 +93,15 @@ export function Hero() {
   );
 }
 
-function CyberFallback() {
+// Painted before the WebGL canvas mounts, so the hero never flashes flat navy.
+function NebulaFallback() {
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[radial-gradient(circle_at_70%_35%,rgba(34,211,238,.2),transparent_34%)]">
-      <div className="matrix-rain" />
-      <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent,rgba(59,130,246,.16),transparent)]" />
-    </div>
+    <div
+      className="h-full w-full bg-ink"
+      style={{
+        backgroundImage:
+          "radial-gradient(circle at 62% 46%, rgba(186,245,255,.30) 0%, transparent 26%), radial-gradient(circle at 62% 46%, rgba(34,211,238,.30) 18%, transparent 48%), radial-gradient(ellipse at 62% 46%, rgba(236,116,42,.22) 40%, transparent 68%), radial-gradient(circle at 62% 46%, rgba(2,6,23,0) 60%, #020617 82%)"
+      }}
+    />
   );
 }

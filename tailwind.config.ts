@@ -128,6 +128,25 @@ const config: Config = {
         "metal-drift": {
           "0%,100%": { transform: "translate3d(0,0,0) scale(1.04)" },
           "50%": { transform: "translate3d(-1.2%,0.8%,0) scale(1.06)" }
+        },
+        // The moon's shine. Opacity and transform only. The two bloom cycles
+        // run at different periods so they drift in and out of phase instead
+        // of pulsing in lockstep, which is what would make it read mechanical.
+        "moon-glow": {
+          "0%,100%": { opacity: "0.5" },
+          "50%": { opacity: "1" }
+        },
+        "moon-rim": {
+          "0%,100%": { opacity: "0.62" },
+          "50%": { opacity: "1" }
+        },
+        "moon-shimmer": {
+          "0%": { transform: "translate3d(-120%,0,0)" },
+          "100%": { transform: "translate3d(420%,0,0)" }
+        },
+        "moon-drift": {
+          "0%,100%": { transform: "translate3d(0,0,0) scale(1)" },
+          "50%": { transform: "translate3d(-0.8%,-0.6%,0) scale(1.03)" }
         }
       },
       animation: {
@@ -137,7 +156,11 @@ const config: Config = {
         "beam-sheen": "beam-sheen 7s cubic-bezier(0.45,0,0.55,1) infinite",
         "edge-travel": "edge-travel 6.5s cubic-bezier(0.4,0,0.6,1) infinite",
         "rail-travel": "rail-travel 8s cubic-bezier(0.4,0,0.6,1) infinite",
-        "metal-drift": "metal-drift 26s ease-in-out infinite"
+        "metal-drift": "metal-drift 26s ease-in-out infinite",
+        "moon-glow": "moon-glow 9s ease-in-out infinite",
+        "moon-rim": "moon-rim 6.5s ease-in-out infinite",
+        "moon-shimmer": "moon-shimmer 14s cubic-bezier(0.45,0,0.55,1) infinite",
+        "moon-drift": "moon-drift 34s ease-in-out infinite"
       }
     }
   },

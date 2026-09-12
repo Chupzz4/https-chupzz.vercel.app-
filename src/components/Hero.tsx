@@ -1,6 +1,5 @@
 import { ArrowUpRight, Play, ShieldCheck } from "lucide-react";
-import { HeroMetalBackdrop } from "@/components/HeroMetalBackdrop";
-import { HeroVisual } from "@/components/HeroVisual";
+import { HeroMoonBackdrop } from "@/components/HeroMoonBackdrop";
 import { MetalButton } from "@/components/ui/MetalButton";
 import { heroStats } from "@/lib/content";
 import { siteConfig } from "@/lib/site";
@@ -13,10 +12,14 @@ import { siteConfig } from "@/lib/site";
 export function Hero() {
   return (
     <section id="home" className="relative isolate overflow-hidden bg-obsidian pt-[4.5rem]">
-      <HeroMetalBackdrop />
+      <HeroMoonBackdrop />
 
-      <div className="relative mx-auto grid max-w-[86rem] items-center gap-16 px-5 pb-28 pt-20 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:px-10 lg:pb-36 lg:pt-28">
-        <div className="rise-in max-w-2xl">
+      {/* Single column, held to the left half. The moon is the hero visual
+          now, and it wants the right side of the frame — the dashboard panel
+          that used to sit there was competing with it for the same space, and
+          its content already has a section of its own further down the page. */}
+      <div className="relative mx-auto max-w-[86rem] px-5 pb-28 pt-20 sm:px-8 lg:px-10 lg:pb-40 lg:pt-32">
+        <div className="rise-in max-w-2xl lg:max-w-[40rem]">
           <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-2 pl-2.5 pr-4 backdrop-blur-sm">
             <span className="grid h-5 w-5 place-items-center rounded-full bg-steel/15">
               <ShieldCheck size={11} className="text-steel-light" strokeWidth={2.2} />
@@ -31,7 +34,7 @@ export function Hero() {
               — forced at 390px they split it into five ragged lines. The
               explicit {" "} survives the hidden <br>, which JSX would otherwise
               leave as "systemsfor businesses". */}
-          <h1 className="mt-8 text-balance font-display text-[2.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-ivory sm:text-[3.75rem] lg:text-[4.5rem]">
+          <h1 className="mt-8 text-balance font-display text-[2.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-ivory sm:text-[3.5rem] lg:text-[4rem]">
             Intelligent systems{" "}
             <br className="hidden sm:block" />
             for businesses that{" "}
@@ -76,10 +79,6 @@ export function Hero() {
               </div>
             ))}
           </dl>
-        </div>
-
-        <div className="rise-in-delayed lg:pl-4">
-          <HeroVisual />
         </div>
       </div>
 

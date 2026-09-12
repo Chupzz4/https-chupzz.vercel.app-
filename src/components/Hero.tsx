@@ -1,167 +1,128 @@
-"use client";
+import { ArrowUpRight, Play, ShieldCheck } from "lucide-react";
+import { HeroVisual } from "@/components/HeroVisual";
+import { MetalButton } from "@/components/ui/MetalButton";
+import { heroStats } from "@/lib/content";
+import { siteConfig } from "@/lib/site";
 
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { ArrowRight, CalendarCheck, ChevronDown, Eye, ShieldCheck } from "lucide-react";
-import { heroStats, stackTags } from "@/lib/content";
-
-const HeroNebula = dynamic(() => import("@/components/HeroNebula"), {
-  ssr: false,
-  loading: () => <NebulaFallback />
-});
-
-// A fragment shader doing seven fbm passes per pixel is fine on any real GPU
-// and hopeless on a software rasteriser: under SwiftShader it pins the main
-// thread for tens of seconds. Headless auditors (Lighthouse, PageSpeed) run
-// exactly that way, and so do some VMs and remote desktops. Those viewers keep
-// the static gradient; nobody gets a background that costs them the page.
-function hasHardwareWebGL(): boolean {
-  try {
-    const canvas = document.createElement("canvas");
-    const gl =
-      canvas.getContext("webgl2", { failIfMajorPerformanceCaveat: true }) ??
-      canvas.getContext("webgl", { failIfMajorPerformanceCaveat: true });
-    if (!gl) return false;
-    const info = gl.getExtension("WEBGL_debug_renderer_info");
-    const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
-    return !/swiftshader|llvmpipe|softpipe|software|mesa offscreen|basic render/i.test(renderer);
-  } catch {
-    return false;
-  }
-}
-
+/**
+ * Server component by design. Everything that moves here is CSS, so the hero
+ * ships no JavaScript at all and the headline — the LCP element — paints with
+ * the first byte of HTML rather than waiting on hydration.
+ */
 export function Hero() {
-  // The nebula is decoration: three.js + the shader are ~150 KB that have no
-  // business on the critical path. Hold the static fallback until the browser
-  // is idle, so hydration and the LCP paint happen before the chunk is even
-  // requested. rAF-in-idle keeps the swap off the same frame as other work.
-  const [showNebula, setShowNebula] = useState(false);
-  useEffect(() => {
-    let raf = 0;
-    const start = () => {
-      if (!hasHardwareWebGL()) return;
-      raf = requestAnimationFrame(() => setShowNebula(true));
-    };
-    // Safari still lacks requestIdleCallback; a short timeout stands in.
-    const hasIdle = typeof window.requestIdleCallback === "function";
-    const handle = hasIdle
-      ? window.requestIdleCallback(start, { timeout: 2500 })
-      : window.setTimeout(start, 1200);
-    return () => {
-      cancelAnimationFrame(raf);
-      if (hasIdle) window.cancelIdleCallback(handle);
-      else window.clearTimeout(handle);
-    };
-  }, []);
-
   return (
-    <section id="home" className="relative isolate min-h-screen overflow-hidden bg-ink pt-16">
-      <div className="absolute inset-0 z-0">
-        {showNebula ? <HeroNebula /> : <NebulaFallback />}
-      </div>
-      <div className="absolute inset-0 z-[1] hidden bg-[linear-gradient(90deg,rgba(2,6,23,.96)_0%,rgba(2,6,23,.78)_42%,rgba(2,6,23,.28)_100%)] md:block" />
-      <div className="absolute inset-x-0 bottom-0 z-[1] h-40 bg-gradient-to-t from-ink to-transparent" />
-      {/* The horizontal scrim only clears the copy on wide layouts; stacked
-          phone layouts need a vertical one to keep the headline legible. */}
-      <div className="absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(2,6,23,.88)_0%,rgba(2,6,23,.58)_48%,rgba(2,6,23,.80)_100%)] md:hidden" />
+    <section id="home" className="relative isolate overflow-hidden bg-obsidian pt-[4.5rem]">
+      <HeroBackdrop />
 
-      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.02fr_.98fr] lg:px-8">
-        <div className="hero-rise max-w-3xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-md border border-cyan/30 bg-cyan/10 px-3 py-2 text-xs font-medium text-cyan shadow-glow">
-            <ShieldCheck size={15} />
-            Premium Tech VA & AI Automation Specialist
+      <div className="relative mx-auto grid max-w-[86rem] items-center gap-16 px-5 pb-28 pt-20 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:px-10 lg:pb-36 lg:pt-28">
+        <div className="rise-in max-w-2xl">
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-2 pl-2.5 pr-4 backdrop-blur-sm">
+            <span className="grid h-5 w-5 place-items-center rounded-full bg-steel/15">
+              <ShieldCheck size={11} className="text-steel-light" strokeWidth={2.2} />
+            </span>
+            <span className="text-[0.625rem] font-semibold uppercase tracking-wider text-platinum">
+              Premium Tech VA &amp; AI Automation
+            </span>
           </div>
-          <h1 className="text-balance text-4xl font-semibold tracking-normal text-white sm:text-5xl lg:text-7xl">
-            Helping Businesses Automate, Scale & Generate More Leads
+
+          {/* The breaks are the intended three-line composition on tablet and
+              up. Below sm they are dropped so the headline can wrap on its own
+              — forced at 390px they split it into five ragged lines. The
+              explicit {" "} survives the hidden <br>, which JSX would otherwise
+              leave as "systemsfor businesses". */}
+          <h1 className="mt-8 text-balance font-display text-[2.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-ivory sm:text-[3.75rem] lg:text-[4.5rem]">
+            Intelligent systems{" "}
+            <br className="hidden sm:block" />
+            for businesses that{" "}
+            <br className="hidden sm:block" />
+            <span className="text-metal-steel">refuse to stall.</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-pretty text-base leading-8 text-slate-300 sm:text-lg">
-            I build websites, funnels, and AI automation systems that help businesses save time, capture more leads,
-            and grow faster.
+
+          <p className="mt-7 max-w-xl text-pretty text-[0.9375rem] leading-[1.9] text-silver sm:text-base">
+            I design and build the automation layer behind growing companies — websites, funnels, CRM
+            architecture, and AI agents that capture demand, qualify it, and move it forward without
+            anyone chasing it manually.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="https://calendly.com/capistranochristianpaul/30min"
+          <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <MetalButton
+              href={siteConfig.calendly}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex h-12 items-center justify-center gap-2 rounded-md bg-cyan px-6 text-sm font-bold text-ink shadow-[0_0_38px_rgba(34,211,238,.32)] transition hover:bg-white"
+              size="lg"
             >
-              <CalendarCheck size={18} />
-              Book a Free Consultation
-              <ArrowRight size={17} className="transition group-hover:translate-x-1" />
-            </a>
-            <a
-              href="#work"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/14 bg-white/6 px-6 text-sm font-semibold text-white backdrop-blur transition hover:border-electric/60 hover:bg-electric/12"
-            >
-              <Eye size={18} />
-              View My Work
-            </a>
+              Book a Strategy Call
+              <ArrowUpRight size={16} strokeWidth={2.4} />
+            </MetalButton>
+            <MetalButton href="#systems" variant="platinum" size="lg">
+              <Play size={13} strokeWidth={2.4} className="text-steel-light" />
+              See the System
+            </MetalButton>
           </div>
 
-          <div className="mt-9 grid max-w-xl grid-cols-3 gap-3">
+          <dl className="mt-14 grid max-w-lg grid-cols-3 gap-px overflow-hidden rounded-xl border border-white/8 bg-white/[0.06]">
             {heroStats.map((stat) => (
-              <div key={stat.label} className="rounded-lg border border-white/10 bg-white/6 p-3 backdrop-blur-md">
-                <div className="text-xl font-semibold text-white">{stat.value}</div>
-                <div className="mt-1 text-xs leading-5 text-slate-400">{stat.label}</div>
+              <div key={stat.label} className="bg-carbon/90 px-4 py-5 sm:px-5">
+                <dt className="sr-only">{stat.label}</dt>
+                <dd>
+                  <span className="block font-display text-2xl leading-none text-metal-platinum sm:text-[1.75rem]">
+                    {stat.value}
+                  </span>
+                  <span className="mt-2.5 block text-[0.6875rem] leading-[1.5] text-ash">
+                    {stat.label}
+                  </span>
+                </dd>
               </div>
             ))}
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-2">
-            {stackTags.map((tag) => (
-              <span key={tag} className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300">
-                {tag}
-              </span>
-            ))}
-          </div>
+          </dl>
         </div>
 
-        {/* christian-portrait.webp is Christian.webp cropped to its opaque
-            bounds (728x1297 of the original 1414x2000). The source had two
-            thirds of its pixels in transparent padding, which left roughly 173
-            real pixels spanning a 672px-wide paint - hence the soft render. */}
-        <div className="hero-portrait-in relative hidden min-h-[520px] items-center justify-center lg:flex">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-1/2 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,.22)_0%,rgba(34,211,238,.08)_38%,transparent_68%)] blur-2xl"
-          />
-          <div className="relative aspect-[728/1297] w-full max-w-[300px] overflow-hidden rounded-2xl shadow-[0_28px_60px_rgba(2,6,23,.65)] ring-1 ring-white/12 xl:max-w-[336px]">
-            <Image
-              src="/images/christian-portrait.webp"
-              alt="Christian Capistrano, Tech VA and AI automation specialist"
-              fill
-              priority
-              quality={90}
-              sizes="(min-width: 1280px) 336px, (min-width: 1024px) 300px, 16px"
-              className="object-cover"
-            />
-          </div>
+        <div className="rise-in-delayed lg:pl-4">
+          <HeroVisual />
         </div>
       </div>
 
-      <a
-        href="#about"
-        aria-label="Scroll to about"
-        className="absolute bottom-5 left-1/2 z-20 hidden h-10 w-10 -translate-x-1/2 place-items-center rounded-md border border-white/12 bg-white/8 text-slate-200 backdrop-blur transition hover:border-cyan/50 hover:text-cyan sm:grid"
-      >
-        <ChevronDown size={20} />
-      </a>
+      <div className="hairline absolute inset-x-0 bottom-0" />
     </section>
   );
 }
 
-// Painted before the WebGL canvas mounts, so the hero never flashes flat navy.
-function NebulaFallback() {
+/**
+ * Layered, all decorative: a hairline rule grid masked to fade out toward the
+ * bottom, one steel bloom at the upper right, and a vignette that keeps the
+ * corners dark so the headline holds contrast at every viewport width.
+ */
+function HeroBackdrop() {
   return (
-    <div
-      className="h-full w-full bg-ink"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle at 62% 46%, rgba(186,245,255,.30) 0%, transparent 26%), radial-gradient(circle at 62% 46%, rgba(34,211,238,.30) 18%, transparent 48%), radial-gradient(ellipse at 62% 46%, rgba(236,116,42,.22) 40%, transparent 68%), radial-gradient(circle at 62% 46%, rgba(2,6,23,0) 60%, #020617 82%)"
-      }}
-    />
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+      <div
+        className="absolute inset-0 bg-hair-grid bg-grid"
+        style={{
+          maskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 55%, transparent 88%)",
+          WebkitMaskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 55%, transparent 88%)"
+        }}
+      />
+      <div
+        className="absolute right-[-10%] top-[-14%] h-[38rem] w-[38rem] rounded-full opacity-60 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(168,182,200,0.22) 0%, rgba(168,182,200,0.07) 38%, transparent 68%)"
+        }}
+      />
+      <div
+        className="absolute bottom-[-20%] left-[-12%] h-[30rem] w-[30rem] rounded-full opacity-50 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(145,152,163,0.14) 0%, transparent 65%)"
+        }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 90% 70% at 50% 40%, transparent 40%, rgba(8,12,17,0.72) 100%)"
+        }}
+      />
+    </div>
   );
 }

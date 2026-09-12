@@ -5,135 +5,262 @@
 /* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
+/* Everything below is split across Tailwind's own layers on purpose.
+   `.luxe-panel` sets `position: relative`, and `.absolute` carries identical
+   specificity (0,1,0) — so as plain top-level CSS it won whichever came last in
+   the file, and a `luxe-panel absolute` card silently stayed in normal flow.
+   Declaring these in `@layer components` puts them ahead of `@tailwind
+   utilities` in the cascade, so a positioning utility in the markup always
+   wins over the component default. */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Clears the 4.5rem fixed header so anchor targets don't land underneath it. */
+    scroll-padding-top: 6rem;
+    background: #080c11;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #080c11;
+    color: #f2f5fa;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: rgba(126, 169, 220, 0.32);
+    color: #f2f5fa;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid #7ea9dc;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  #main-content:focus {
+    outline: none;
+  }
 }
 
-* {
-  box-sizing: border-box;
+@layer components {
+  /* Off-screen until focused, so keyboard users can jump the header controls
+     that otherwise precede the page content. Fixed, not absolute: the containing
+     block is a very tall <main>, so a percentage offset would park it thousands
+     of pixels away instead of at the top of the viewport. */
+  .skip-link {
+    position: fixed;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    border-radius: 0.375rem;
+    background: #c6d1de;
+    padding: 0.75rem 1.25rem;
+    color: #080c11;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    transition: top 150ms ease-out;
+  }
+
+  .skip-link:focus-visible {
+    top: 1rem;
+  }
+
+  /* ── Metal treatments ────────────────────────────────────────────────────
+     Gradient-clipped text for the two metals. Display fragments and numerals
+     only; at body size the ramp muddies the letterforms. */
+  .text-metal-steel {
+    background: linear-gradient(135deg, #6e7a8c 0%, #dce6f3 30%, #a8b6c8 52%, #f8fbff 70%, #7e8ca0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-metal-platinum {
+    background: linear-gradient(135deg, #6f7480 0%, #eef0f4 28%, #9aa0ac 50%, #fbfcfd 68%, #858b97 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* A hairline that fades out at both ends — the section divider used
+     throughout. A flat 1px border would box sections in; this reads as light
+     catching an edge. */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200, 203, 211, 0.16), transparent);
+  }
+
+  .hairline-steel {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(168, 182, 200, 0.5), transparent);
+  }
+
+  /* The signature card: near-black surface, 1px top highlight, soft deep
+     shadow. The ::before is a 1px inset border drawn as a gradient so the top
+     edge is brighter than the bottom — how a real bevelled panel catches light. */
+  .luxe-panel {
+    position: relative;
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.012) 40%, transparent 100%),
+      #101820;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.055),
+      0 30px 60px -34px rgba(0, 0, 0, 0.9);
+  }
+
+  .luxe-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02) 38%, transparent 70%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Same construction, chrome-lit — the one emphasised card per section. */
+  .luxe-panel-steel::before {
+    background: linear-gradient(160deg, rgba(220, 230, 243, 0.5), rgba(168, 182, 200, 0.16) 42%, transparent 72%);
+  }
+
+  /* Glass, used sparingly: floating header and overlay chrome only. */
+  .luxe-glass {
+    background: rgba(12, 18, 25, 0.66);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+  }
+
+  /* ── Motion ──────────────────────────────────────────────────────────────
+     Above-the-fold entrances animate transform only and never touch opacity:
+     the hero copy is the LCP element, and starting it at opacity 0 would hold
+     the largest paint until hydration. First paint is the LCP paint. */
+  .rise-in {
+    animation: rise-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .rise-in-delayed {
+    animation: rise-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+  }
+
+  .drop-in {
+    animation: drop-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* The sweep across metal buttons on hover. Transform-only, on its own layer,
+     so the compositor runs it without a main-thread style recalc per frame. */
+  .sheen::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 38%;
+    transform: translateX(-120%);
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+    pointer-events: none;
+  }
+
+  .sheen:hover::after,
+  .sheen:focus-visible::after {
+    animation: sheen-sweep 0.85s cubic-bezier(0.3, 0, 0.2, 1);
+  }
+
+  /* The integrations belt pauses under the cursor so logos stay readable. */
+  .marquee-track {
+    animation: marquee 46s linear infinite;
+    will-change: transform;
+  }
+
+  .marquee-viewport:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Scroll reveal. Driven by the IntersectionObserver in Reveal.tsx, which adds
+     `.reveal-in` as each element enters the viewport.
+
+     The hidden state is gated on `.js`, set by the inline script in layout.tsx
+     and withdrawn by that script's failsafe if React never hydrates. Hiding
+     unconditionally made every section on the page contingent on the bundle
+     loading: one 404 on a JS chunk and the whole site rendered blank, which is
+     exactly what a clobbered dev build produced. Default is visible; hiding is
+     the thing that has to be earned. */
+  .js .reveal {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+    transition:
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .js .reveal-in {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
+  /* Edge-fade for horizontally scrolling strips, so logos dissolve rather than
+     getting guillotined at the container edge. */
+  .edge-fade {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-  /* Clears the 4rem fixed header so anchor targets don't land underneath it. */
-  scroll-padding-top: 5.5rem;
-  background: #020617;
+@keyframes rise-in {
+  from {
+    transform: translate3d(0, 28px, 0);
+  }
 }
 
-/* Off-screen until focused, so keyboard users can jump the 18 header
-   controls that otherwise precede the page content. */
-.skip-link {
-  /* fixed, not absolute: the containing block is a 7000px-tall <main>, so a
-     percentage offset parks it thousands of pixels away and it stays anchored
-     to the viewport no matter how far down the page focus happens. */
-  position: fixed;
-  left: 1rem;
-  top: -4rem;
-  z-index: 100;
-  border-radius: 0.375rem;
-  background: #22d3ee;
-  padding: 0.75rem 1.25rem;
-  color: #020617;
-  font-size: 0.875rem;
-  font-weight: 700;
-  transition: top 150ms ease-out;
+@keyframes drop-in {
+  from {
+    transform: translate3d(0, -26px, 0);
+  }
 }
 
-.skip-link:focus-visible {
-  top: 1rem;
-}
-
-#main-content:focus {
-  outline: none;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #020617;
-  color: #fff;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-::selection {
-  background: rgba(34, 211, 238, 0.35);
-  color: #fff;
-}
-
-a,
-button {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid #22d3ee;
-  outline-offset: 3px;
-}
-
-/* The sweep used to be a GSAP tween writing --scan-y onto :root every frame.
-   A custom property on :root invalidates style for the whole document, so each
-   frame was a full-page style recalc plus a full-viewport blended repaint, and
-   it never stopped: Lighthouse measured 134 s of blocking time on mobile from
-   that one tween. The beam is now a transform-only keyframe on its own layer,
-   which the compositor animates without touching the main thread. */
-.scanline {
-  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5px);
-  overflow: hidden;
-}
-
-.scanline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -16%;
-  height: 16%;
-  background: linear-gradient(to bottom, transparent, rgba(34, 211, 238, 0.12), transparent);
-  animation: scan-sweep 8s linear infinite;
-  will-change: transform;
-}
-
-@keyframes scan-sweep {
+@keyframes sheen-sweep {
+  from {
+    transform: translateX(-120%);
+  }
   to {
-    transform: translateY(725%);
+    transform: translateX(220%);
   }
 }
 
-/* Entrance motion for the above-the-fold pieces. These animate transform only:
-   the framer-motion versions started at opacity 0, which kept the hero copy -
-   the LCP element - invisible until hydration and cost ~1.7 s of render delay
-   on mobile. Opacity is never touched, so first paint is the LCP paint. */
-.hero-rise {
-  animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.hero-portrait-in {
-  animation: hero-portrait-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
-}
-
-.nav-drop {
-  animation: nav-drop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes hero-rise {
+@keyframes marquee {
   from {
-    transform: translateY(30px);
+    transform: translate3d(0, 0, 0);
   }
-}
-
-@keyframes hero-portrait-in {
-  from {
-    transform: scale(0.94);
-  }
-}
-
-@keyframes nav-drop {
-  from {
-    transform: translateY(-28px);
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }
 

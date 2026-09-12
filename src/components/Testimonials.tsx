@@ -1,65 +1,56 @@
-"use client";
-
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { Reveal } from "@/components/Reveal";
+import { SectionHeader } from "@/components/SectionHeader";
 import { testimonials } from "@/lib/content";
 
+/**
+ * Three quotes, shown at once.
+ *
+ * This replaced an auto-advancing carousel that rotated every 5.2s: it hid two
+ * thirds of the proof behind a timer, moved text while people were reading it,
+ * and needed an interval, two arrow controls and AnimatePresence to do so. Set
+ * side by side the same content is fully scannable and ships no JavaScript.
+ */
 export function Testimonials() {
-  const [index, setIndex] = useState(0);
-  const active = testimonials[index];
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setIndex((current) => (current + 1) % testimonials.length);
-    }, 5200);
-    return () => window.clearInterval(id);
-  }, []);
-
   return (
-    <section className="bg-[#07111f] px-4 py-20 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl text-center">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-cyan">Testimonials</p>
-        <h2 className="text-balance text-3xl font-semibold text-white sm:text-4xl lg:text-5xl">
-          Systems that feel organized, premium, and easy to operate.
-        </h2>
+    <section className="relative overflow-hidden bg-carbon py-24 sm:py-32">
+      <div className="hairline absolute inset-x-0 top-0" />
 
-        <div className="relative mx-auto mt-10 overflow-hidden rounded-lg border border-white/10 bg-white/6 p-6 text-left shadow-glow backdrop-blur sm:p-10">
-          <Quote className="mb-8 text-cyan" size={34} />
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active.name}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.45 }}
-            >
-              <p className="text-pretty text-xl leading-9 text-white sm:text-2xl">&quot;{active.quote}&quot;</p>
-              <div className="mt-8 border-t border-white/10 pt-6">
-                <div className="font-semibold text-white">{active.name}</div>
-                <div className="mt-1 text-sm text-slate-300">{active.role}</div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+      <div className="relative mx-auto max-w-[86rem] px-5 sm:px-8 lg:px-10">
+        <SectionHeader
+          eyebrow="Client Feedback"
+          title="Systems that feel organised, premium, and easy to operate."
+        />
 
-          <div className="absolute bottom-6 right-6 flex gap-2">
-            <button
-              type="button"
-              aria-label="Previous testimonial"
-              onClick={() => setIndex((current) => (current - 1 + testimonials.length) % testimonials.length)}
-              className="grid h-9 w-9 place-items-center rounded-md border border-white/12 text-white transition hover:border-cyan/50 hover:text-cyan"
-            >
-              <ChevronLeft size={17} />
-            </button>
-            <button
-              type="button"
-              aria-label="Next testimonial"
-              onClick={() => setIndex((current) => (current + 1) % testimonials.length)}
-              className="grid h-9 w-9 place-items-center rounded-md border border-white/12 text-white transition hover:border-cyan/50 hover:text-cyan"
-            >
-              <ChevronRight size={17} />
-            </button>
-          </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {testimonials.map((item, index) => (
+            <Reveal key={item.name} delay={index * 0.08}>
+              <figure className="luxe-panel group flex h-full flex-col p-7 transition duration-500 hover:-translate-y-1 hover:shadow-lift sm:p-8">
+                <span
+                  aria-hidden="true"
+                  className="font-display text-5xl leading-none text-steel/35 transition-colors duration-500 group-hover:text-steel/60"
+                >
+                  &ldquo;
+                </span>
+
+                <blockquote className="mt-4 flex-1 text-pretty font-display text-[1.25rem] font-normal leading-[1.6] tracking-[-0.005em] text-ivory">
+                  {item.quote}
+                </blockquote>
+
+                <figcaption className="mt-8 flex items-center gap-4 border-t border-white/7 pt-6">
+                  <span
+                    aria-hidden="true"
+                    className="h-9 w-px shrink-0 bg-gradient-to-b from-steel to-transparent"
+                  />
+                  <span>
+                    <span className="block text-[0.8125rem] font-medium text-ivory">{item.name}</span>
+                    <span className="mt-1 block text-[0.6875rem] uppercase tracking-wider text-ash">
+                      {item.role}
+                    </span>
+                  </span>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>

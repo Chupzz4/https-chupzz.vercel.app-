@@ -2,145 +2,172 @@
 
 import Image from "next/image";
 import { ArrowUpRight, X } from "lucide-react";
-import { motion } from "framer-motion";
-import { portfolio } from "@/lib/content";
+import { useCallback, useEffect, useState, type KeyboardEvent } from "react";
+import { Reveal } from "@/components/Reveal";
+import { SectionHeader } from "@/components/SectionHeader";
+import { caseStudies } from "@/lib/content";
 import { cn } from "@/lib/utils";
-import { useState, type KeyboardEvent } from "react";
-
-const accentMap = {
-  cyan: "from-cyan/30 to-cyan/5 text-cyan",
-  blue: "from-electric/30 to-electric/5 text-blue-300",
-  emerald: "from-emerald-400/24 to-emerald-400/5 text-emerald-300",
-  violet: "from-violet-400/24 to-violet-400/5 text-violet-300"
-};
 
 export function Portfolio() {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
+  const close = useCallback(() => setSelected(null), []);
+
+  // The previous lightbox could only be dismissed by clicking the backdrop or
+  // the close glyph: Escape did nothing and the page kept scrolling behind it.
+  useEffect(() => {
+    if (selected === null) return;
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [selected, close]);
+
+  const active = selected !== null ? caseStudies[selected] : null;
 
   return (
-    <section id="work" className="relative overflow-hidden bg-ink px-4 py-20 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-          <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-cyan">Portfolio</p>
-            <h2 className="max-w-3xl text-balance text-3xl font-semibold text-white sm:text-4xl lg:text-5xl">
-              Sample Portfolio Projects
-            </h2>
-          </div>
-          <p className="max-w-md text-sm leading-7 text-slate-300">
-            Replace these with live projects, screenshots, metrics, and client results as your portfolio grows.
+    <section id="work" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
+      <div className="relative mx-auto max-w-[86rem] px-5 sm:px-8 lg:px-10">
+        <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between sm:mb-20">
+          <SectionHeader
+            eyebrow="Selected Work"
+            align="left"
+            className="mb-0 max-w-2xl"
+            title={
+              <>
+                Systems built, shipped,
+                <br className="hidden sm:block" /> and handed over.
+              </>
+            }
+          />
+          <p className="max-w-sm text-[0.8125rem] leading-[1.8] text-ash md:pb-2">
+            A sample of recent builds across local service, B2B, and operations-heavy businesses.
           </p>
         </div>
 
-        {/* 6 columns so 5 cards tile flush: a 3+3 feature row over a 2+2+2 row.
-            At 5 columns the second row filled only 2 of 5, leaving a visible hole. */}
+        {/* 6 columns so five cards tile flush: a 3+3 feature row over 2+2+2. */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-          {portfolio.map((item, index) => (
-            <motion.div
+          {caseStudies.map((item, index) => (
+            <Reveal
               key={item.title}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-70px" }}
-              transition={{ duration: 0.62, delay: index * 0.06 }}
-              className={cn(
-                "group min-h-[360px] overflow-hidden rounded-lg border border-white/10 bg-white/6 backdrop-blur transition hover:-translate-y-1 hover:border-cyan/40 hover:shadow-glow cursor-pointer",
-                index < 2 ? "lg:col-span-3" : "lg:col-span-2",
-                index === portfolio.length - 1 && portfolio.length % 2 === 1 && "md:col-span-2"
-              )}
-              onClick={() => item.image && setSelectedIndex(index)}
-              // The card opens a lightbox on click, so it needs to be reachable
-              // and operable from the keyboard, not just the mouse.
-              {...(item.image
-                ? {
-                    role: "button",
-                    tabIndex: 0,
-                    "aria-label": `${item.title} — open preview`,
-                    onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        setSelectedIndex(index);
-                      }
-                    }
-                  }
-                : {})}
+              delay={Math.min(index * 0.06, 0.24)}
+              className={index < 2 ? "lg:col-span-3" : "lg:col-span-2"}
             >
-              <div 
-                className={cn("relative h-40 overflow-hidden rounded-t-lg bg-gradient-to-br", accentMap[item.accent as keyof typeof accentMap])}
+              <article
+                role="button"
+                tabIndex={0}
+                aria-label={`${item.title} — open preview`}
+                onClick={() => setSelected(index)}
+                onKeyDown={(event: KeyboardEvent<HTMLElement>) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelected(index);
+                  }
+                }}
+                className={cn(
+                  "luxe-panel group relative flex h-full cursor-pointer flex-col overflow-hidden",
+                  "transition duration-500 hover:-translate-y-1.5 hover:shadow-lift"
+                )}
               >
-                {item.image ? (
+                <div className={cn("relative overflow-hidden", index < 2 ? "h-56" : "h-44")}>
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    priority={false}
-                    className="object-cover transition duration-300 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover object-top transition duration-700 group-hover:scale-[1.04]"
                   />
-                ) : (
-                  <div className="absolute inset-5 rounded-lg border border-white/15 bg-ink/55 p-4 shadow-blue-glow">
-                    <div className="mb-4 flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-cyan" />
-                      <span className="h-2 w-2 rounded-full bg-electric" />
-                      <span className="h-2 w-2 rounded-full bg-white/45" />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-3 w-3/4 rounded bg-white/20" />
-                      <div className="h-3 w-1/2 rounded bg-white/12" />
-                      <div className="mt-4 grid grid-cols-3 gap-2">
-                        <div className="h-12 rounded-md bg-cyan/20" />
-                        <div className="h-12 rounded-md bg-electric/20" />
-                        <div className="h-12 rounded-md bg-white/10" />
-                      </div>
-                    </div>
+                  {/* Two passes: a wash that desaturates the screenshot into the
+                      palette, and a bottom fade so the card body reads as one
+                      continuous surface with the image above it. */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-obsidian/45 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-40"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-onyx to-transparent"
+                  />
+
+                  <span className="absolute left-4 top-4 rounded-full border border-white/12 bg-obsidian/70 px-3 py-1.5 text-[0.5625rem] font-semibold uppercase tracking-wider text-platinum backdrop-blur-sm">
+                    {item.type}
+                  </span>
+                </div>
+
+                <div className="flex flex-1 flex-col p-6 sm:p-7">
+                  <div className="flex items-start justify-between gap-4">
+                    <h3
+                      className={cn(
+                        "font-display font-normal tracking-[-0.01em] text-ivory",
+                        index < 2 ? "text-2xl" : "text-xl"
+                      )}
+                    >
+                      {item.title}
+                    </h3>
+                    <ArrowUpRight
+                      size={17}
+                      className="mt-1 shrink-0 text-ash transition duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-steel"
+                    />
                   </div>
-                )}
-              </div>
-              <div className="p-5">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan">{item.type}</span>
-                  <ArrowUpRight size={17} className="text-slate-400 transition group-hover:text-cyan" />
+
+                  <p className="mt-3 text-[0.8125rem] leading-[1.8] text-silver">{item.copy}</p>
+
+                  <div className="mt-auto flex flex-wrap items-center gap-2 pt-6">
+                    <span className="rounded-full bg-brushed-steel px-3 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-[#0A1018]">
+                      {item.metric}
+                    </span>
+                    {item.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/8 px-3 py-1.5 text-[0.625rem] font-medium text-ash"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{item.copy}</p>
-                <div className="mt-5 inline-flex rounded-md border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-semibold text-white">
-                  {item.metric}
-                </div>
-              </div>
-            </motion.div>
+              </article>
+            </Reveal>
           ))}
         </div>
       </div>
 
-      {selectedIndex !== null && portfolio[selectedIndex]?.image && (
+      {active ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-          onClick={() => setSelectedIndex(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${active.title} preview`}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-obsidian/92 p-5 backdrop-blur-md sm:p-10"
+          onClick={close}
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            className="relative max-h-[90vh] max-w-4xl w-full"
-            onClick={(e) => e.stopPropagation()}
+          <div
+            className="luxe-panel relative max-h-[88vh] w-full max-w-5xl overflow-hidden p-2"
+            onClick={(event) => event.stopPropagation()}
           >
             <Image
-              src={portfolio[selectedIndex].image}
-              alt="Expanded portfolio image"
-              width={1200}
-              height={800}
+              src={active.image}
+              alt={`${active.title} — full preview`}
+              width={1600}
+              height={1000}
               priority
-              className="h-auto w-full rounded-lg object-contain"
+              className="h-auto max-h-[84vh] w-full rounded-xl object-contain"
             />
-            <button
-              onClick={() => setSelectedIndex(null)}
-              className="absolute -top-12 right-0 text-white hover:text-cyan transition"
-              aria-label="Close image"
-            >
-              <X size={32} />
-            </button>
-          </motion.div>
+          </div>
+          <button
+            type="button"
+            onClick={close}
+            autoFocus
+            aria-label="Close preview"
+            className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full border border-white/12 bg-white/5 text-platinum transition hover:border-steel/50 hover:text-ivory sm:right-8 sm:top-8"
+          >
+            <X size={19} />
+          </button>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

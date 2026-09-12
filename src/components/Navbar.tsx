@@ -1,47 +1,68 @@
 "use client";
 
-import { CalendarCheck, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { MetalButton } from "@/components/ui/MetalButton";
 import { navItems } from "@/lib/content";
+import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Over the hero the bar is fully transparent so the visual runs edge to edge;
+  // past it the glass and hairline come in. Passive listener, and the state only
+  // flips at the threshold, so this costs one boolean compare per scroll event.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // A fixed header over a scrollable page traps the pointer behind the panel on
+  // phones; locking the body while the menu is open avoids scrolling the page
+  // underneath it.
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
-    <header className="nav-drop fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-ink/58 backdrop-blur-xl">
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#home" className="group flex items-center gap-3" aria-label="Christian Capistrano, back to top">
-          <span className="grid h-9 w-9 place-items-center rounded-lg border border-cyan/40 bg-cyan/10 shadow-glow">
-            <span className="h-2.5 w-2.5 rounded-full bg-cyan shadow-[0_0_18px_rgba(34,211,238,.85)]" />
-          </span>
-          <span className="text-sm font-semibold tracking-normal text-white">
-            Christian Capistrano
+    <header
+      className={cn(
+        "drop-in fixed inset-x-0 top-0 z-50 transition-colors duration-500",
+        scrolled || open ? "luxe-glass border-b border-white/8" : "border-b border-transparent"
+      )}
+    >
+      <nav className="mx-auto flex h-[4.5rem] max-w-[86rem] items-center justify-between px-5 sm:px-8 lg:px-10">
+        <a href="#home" className="group" aria-label="Christian Capistrano, back to top">
+          <span className="font-display text-lg leading-none tracking-[0.02em] text-ivory transition-colors duration-300 group-hover:text-steel-light sm:text-xl">
+            {siteConfig.name}
           </span>
         </a>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-9 lg:flex">
           {navItems.map((item) => (
             <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-sm text-slate-300 transition hover:text-white"
+              key={item.href}
+              href={item.href}
+              className="group relative text-[0.8125rem] font-medium tracking-[0.02em] text-platinum transition hover:text-ivory"
             >
-              {item}
+              {item.label}
+              <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-steel transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <a
-            href="https://calendly.com/capistranochristianpaul/30min"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white shadow-blue-glow transition hover:bg-cyan hover:text-ink"
-          >
-            <CalendarCheck size={16} />
-            Book Call
-          </a>
+        <div className="hidden items-center gap-4 lg:flex">
+          <MetalButton href={siteConfig.calendly} target="_blank" rel="noopener noreferrer">
+            Book a Call
+            <ArrowUpRight size={15} strokeWidth={2.4} />
+          </MetalButton>
         </div>
 
         <button
@@ -50,7 +71,7 @@ export function Navbar() {
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => setOpen((value) => !value)}
-          className="grid h-10 w-10 place-items-center rounded-md border border-white/12 text-white md:hidden"
+          className="grid h-11 w-11 place-items-center rounded-full border border-white/12 text-ivory transition hover:border-steel/50 lg:hidden"
         >
           {open ? <X size={18} /> : <Menu size={18} />}
         </button>
@@ -59,30 +80,43 @@ export function Navbar() {
       <div
         id="mobile-nav"
         className={cn(
-          "grid overflow-hidden border-t border-white/10 bg-ink/92 transition-[grid-template-rows] duration-300 md:hidden",
+          "grid overflow-hidden border-t border-white/8 transition-[grid-template-rows] duration-[400ms] lg:hidden",
           // grid-rows-[0fr] collapses the panel visually but leaves its links in
           // the tab order and readable by screen readers. invisible + aria-hidden
-          // takes them out until the menu is actually open.
-          open ? "grid-rows-[1fr]" : "invisible grid-rows-[0fr]"
+          // takes them out of both until the menu is actually open.
+          open ? "grid-rows-[1fr] bg-carbon/95 backdrop-blur-xl" : "invisible grid-rows-[0fr]"
         )}
         aria-hidden={!open}
       >
         <div className="min-h-0">
-          <div className="space-y-2 px-4 py-4">
+          <div className="space-y-1 px-5 py-6 sm:px-8">
             {navItems.map((item) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+                key={item.href}
+                href={item.href}
                 onClick={() => setOpen(false)}
                 tabIndex={open ? undefined : -1}
-                className="block rounded-md px-3 py-3 text-sm text-slate-200 hover:bg-white/8"
+                className="flex items-center justify-between rounded-lg px-3 py-4 text-sm text-platinum transition hover:bg-white/5 hover:text-ivory"
               >
-                {item}
+                {item.label}
+                <ArrowUpRight size={15} className="text-ash" />
               </a>
             ))}
+            <MetalButton
+              href={siteConfig.calendly}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="lg"
+              tabIndex={open ? undefined : -1}
+              className="mt-4 w-full"
+            >
+              Book a Call
+              <ArrowUpRight size={15} strokeWidth={2.4} />
+            </MetalButton>
           </div>
         </div>
       </div>
     </header>
   );
 }
+

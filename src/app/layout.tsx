@@ -1,20 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import { WebVitals } from "@/components/WebVitals";
 import { absoluteUrl, siteConfig, siteUrl } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({ 
+// Inter carries every piece of running text, UI label, and numeral.
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700"]
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter"
+});
+
+// Playfair is display-only: h1, h2, and pull quotes. Three weights, no italics
+// and no small sizes, so the subset stays small despite the second family.
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+  variable: "--font-display"
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Premium Tech VA & AI Automation Specialist | Christian Capistrano",
   description:
-    "Technical Virtual Assistant specializing in AI automation, website development, sales funnels, lead generation, CRM automation, n8n integrations, and GoHighLevel systems. Build scalable business automation.",
+    "AI automation, GTM engineering, websites, funnels, and CRM systems for businesses that want their backend to run itself. Clay, n8n, and GoHighLevel builds with documented handoff.",
   keywords: [
     "Technical Virtual Assistant",
     "AI Automation Specialist",
@@ -80,7 +91,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0F172A",
+  themeColor: "#101820",
   colorScheme: "dark"
 };
 
@@ -90,17 +101,39 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr">
+    // suppressHydrationWarning: the inline script below adds `js` to this
+    // element before React hydrates, so the server and client className differ
+    // by design. It applies to this element's own attributes only.
+    <html
+      lang="en"
+      dir="ltr"
+      className={`${inter.variable} ${playfair.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="format-detection" content="date=no" />
         <meta name="format-detection" content="address=no" />
         <meta name="format-detection" content="email=no" />
-        {/* No resource hints: next/font self-hosts Inter, so the Google Fonts
-            preconnects opened two connections that nothing used; no analytics
-            is installed; and Calendly now loads on scroll, well after this
-            matters. Each hint here is a wasted socket on a phone. */}
+        {/* No resource hints: next/font self-hosts both families, so Google
+            Fonts preconnects would open two sockets nothing uses; no analytics
+            is installed; and Calendly loads on scroll, long after this matters. */}
+        {/* Arms the scroll reveals, and disarms them if the app never comes up.
+            `.js` is what lets globals.css hide a `.reveal`, so with scripting
+            off the class is never set and the page renders in full. The timer
+            covers the harder case — scripting on, but the bundle 404s or throws
+            — where the observer that reveals content would never run and the
+            body would stay blank. Reveal.tsx stamps `hydrated` on mount, so the
+            failsafe is a no-op on any healthy load. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              '(function(){var d=document.documentElement;d.classList.add("js");' +
+              'setTimeout(function(){if(!d.classList.contains("hydrated"))' +
+              'd.classList.remove("js")},4000)})()'
+          }}
+        />
       </head>
       <body className={inter.className}>
         <WebVitals />

@@ -1,5 +1,5 @@
 import { ArrowUp, Mail } from "lucide-react";
-import { navItems } from "@/lib/content";
+import { navItems, socials } from "@/lib/content";
 import { siteConfig } from "@/lib/site";
 
 const disciplines = [
@@ -30,6 +30,33 @@ export function Footer() {
               {siteConfig.email}
               <span className="h-px w-0 bg-steel transition-all duration-300 group-hover:w-5" />
             </a>
+
+            <ul className="mt-8 flex flex-wrap items-center gap-2.5">
+              {socials.map((social) => (
+                <li key={social.name}>
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    // The visible content is a decorative glyph, so the
+                    // accessible name has to come from the label.
+                    aria-label={`${siteConfig.name} on ${social.name}`}
+                    className="group grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-silver transition duration-300 hover:border-ice/45 hover:bg-white/[0.06] hover:text-ivory"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="15"
+                      height="15"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d={social.path} />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <nav aria-label="Footer">

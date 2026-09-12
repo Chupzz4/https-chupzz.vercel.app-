@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { WebVitals } from "@/components/WebVitals";
+import { socials } from "@/lib/content";
 import { absoluteUrl, siteConfig, siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -141,14 +142,16 @@ export default function RootLayout({
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             // Only verifiable facts belong here. The previous version published a
-            // placeholder telephone ("+1-XXX-XXX-XXXX") and three sameAs profile
-            // URLs that were never confirmed to exist — bad structured data is
-            // worse than none. Add sameAs back once the real profiles are known.
+            // placeholder telephone ("+1-XXX-XXX-XXXX") and three unconfirmed
+            // sameAs URLs — bad structured data is worse than none. sameAs is
+            // back now that the profiles are known, sourced from the same list
+            // the footer renders so the two cannot drift apart.
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
               name: siteConfig.name,
               url: siteUrl,
+              sameAs: socials.map((social) => social.href),
               image: absoluteUrl("/logo.png"),
               jobTitle: siteConfig.title,
               email: `mailto:${siteConfig.email}`,

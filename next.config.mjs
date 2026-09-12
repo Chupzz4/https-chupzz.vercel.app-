@@ -38,8 +38,15 @@ const nextConfig = {
       source: "/:path(images/.*|.*\.(?:png|webp|ico|svg|woff2))",
       headers: [
         {
+          // `immutable` is a promise that the bytes at this URL will never
+          // change, and it belongs only on content-hashed URLs — Next already
+          // sets it for /_next/static itself. Applied here it covered every
+          // file in public/, all of which have stable names, so replacing one
+          // could not reach anyone who had already loaded it: the favicon was
+          // pinned for a year. A day of caching with background revalidation
+          // keeps the performance and lets updates actually land.
           key: "Cache-Control",
-          value: "public, max-age=31536000, immutable"
+          value: "public, max-age=86400, stale-while-revalidate=604800"
         }
       ]
     }

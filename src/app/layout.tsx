@@ -77,12 +77,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl
   },
-  icons: {
-    // The 512px icon is 155 KiB and every visit downloaded it for a 16px tab
-    // slot; a 192px derivative is a few KiB and still crisp on a 4x display.
-    icon: [{ url: "/icon-192.png", type: "image/png", sizes: "192x192" }],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }]
-  }
+  // No `icons` block: src/app/favicon.ico, icon.png and apple-icon.png are
+  // picked up by the App Router file convention, and Next emits the link tags
+  // with a fingerprinted URL. Declaring them here by stable /public path is
+  // what made the old icon unupdatable — see the cache note in next.config.mjs.
   // `verification` intentionally omitted: it previously shipped the literal
   // strings "add-your-google-verification-code" / "add-your-bing-verification-code".
   // Add it back with real tokens from Search Console / Bing Webmaster Tools.

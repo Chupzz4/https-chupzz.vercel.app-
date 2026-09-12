@@ -79,12 +79,6 @@ const config: Config = {
         // button clears 5:1 even where the ramp bottoms out.
         "brushed-steel":
           "linear-gradient(135deg,#7B8797 0%,#D5DEEA 18%,#8A96A7 32%,#F6FAFF 52%,#A7B3C4 66%,#818D9D 82%,#C6D1DE 100%)",
-        "brushed-platinum":
-          "linear-gradient(135deg,#5E636E 0%,#D3D7DE 20%,#878D99 38%,#F2F4F7 56%,#7C828E 74%,#B9BEC8 100%)",
-        "steel-hair":
-          "linear-gradient(90deg,transparent 0%,rgba(168,182,200,0.55) 50%,transparent 100%)",
-        "platinum-hair":
-          "linear-gradient(90deg,transparent 0%,rgba(200,203,211,0.4) 50%,transparent 100%)",
         // A single low-contrast rule grid. Kept at ~3% so it reads as texture
         // on a dark card rather than as a visible graph-paper background.
         "hair-grid":
@@ -95,39 +89,9 @@ const config: Config = {
         "grid-sm": "32px 32px"
       },
       keyframes: {
-        marquee: {
-          from: { transform: "translate3d(0,0,0)" },
-          to: { transform: "translate3d(-50%,0,0)" }
-        },
         "flow-pulse": {
           "0%,100%": { opacity: "0.25" },
           "50%": { opacity: "1" }
-        },
-        "sheen-sweep": {
-          from: { transform: "translateX(-120%)" },
-          to: { transform: "translateX(220%)" }
-        },
-        "float-slow": {
-          "0%,100%": { transform: "translate3d(0,0,0)" },
-          "50%": { transform: "translate3d(0,-12px,0)" }
-        },
-        // Hero backdrop. All three translate only, so each runs on its own
-        // compositor layer without touching layout or paint.
-        "beam-sheen": {
-          "0%": { transform: "translate3d(0,-130%,0)" },
-          "100%": { transform: "translate3d(0,520%,0)" }
-        },
-        "edge-travel": {
-          "0%": { transform: "translate3d(0,-150%,0)" },
-          "100%": { transform: "translate3d(0,820%,0)" }
-        },
-        "rail-travel": {
-          "0%": { transform: "translate3d(-160%,0,0)" },
-          "100%": { transform: "translate3d(950%,0,0)" }
-        },
-        "metal-drift": {
-          "0%,100%": { transform: "translate3d(0,0,0) scale(1.04)" },
-          "50%": { transform: "translate3d(-1.2%,0.8%,0) scale(1.06)" }
         },
         // The moon's shine. Opacity and transform only. The two bloom cycles
         // run at different periods so they drift in and out of phase instead
@@ -150,13 +114,7 @@ const config: Config = {
         }
       },
       animation: {
-        marquee: "marquee 46s linear infinite",
         "flow-pulse": "flow-pulse 2.6s ease-in-out infinite",
-        "float-slow": "float-slow 9s ease-in-out infinite",
-        "beam-sheen": "beam-sheen 7s cubic-bezier(0.45,0,0.55,1) infinite",
-        "edge-travel": "edge-travel 6.5s cubic-bezier(0.4,0,0.6,1) infinite",
-        "rail-travel": "rail-travel 8s cubic-bezier(0.4,0,0.6,1) infinite",
-        "metal-drift": "metal-drift 26s ease-in-out infinite",
         "moon-glow": "moon-glow 9s ease-in-out infinite",
         "moon-rim": "moon-rim 6.5s ease-in-out infinite",
         "moon-shimmer": "moon-shimmer 14s cubic-bezier(0.45,0,0.55,1) infinite",

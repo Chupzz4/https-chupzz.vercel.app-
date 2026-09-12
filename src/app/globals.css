@@ -17,15 +17,6 @@
   :root {
     color-scheme: dark;
 
-    /* The hero's edge lights. Warm champagne, matching the reference — the one
-       warm note left in an otherwise cool system, which is why it lives in a
-       variable: swap these four values for the ice blue
-       (#7EA9DC / rgba(126,169,220,...) / #DCEAFB) and the hero falls back in
-       line with the rest of the palette. Nothing else references them. */
-    --hero-edge: #E8C89A;
-    --hero-edge-soft: rgba(232, 200, 154, 0.42);
-    --hero-edge-glow: rgba(232, 200, 154, 0.4);
-    --hero-edge-hot: #FFF4E2;
   }
 
   * {
@@ -122,11 +113,6 @@
     background: linear-gradient(90deg, transparent, rgba(200, 203, 211, 0.16), transparent);
   }
 
-  .hairline-steel {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(168, 182, 200, 0.5), transparent);
-  }
-
   /* The signature card: near-black surface, 1px top highlight, soft deep
      shadow. The ::before is a 1px inset border drawn as a gradient so the top
      edge is brighter than the bottom — how a real bevelled panel catches light. */
@@ -174,10 +160,6 @@
      the largest paint until hydration. First paint is the LCP paint. */
   .rise-in {
     animation: rise-in 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .rise-in-delayed {
-    animation: rise-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
   }
 
   .drop-in {

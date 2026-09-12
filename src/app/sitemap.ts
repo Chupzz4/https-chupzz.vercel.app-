@@ -1,14 +1,24 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site";
 
+/**
+ * The site is a single document, so the sitemap is a single entry.
+ *
+ * This previously also listed `/#about`, `/#services`, `/#work` and `/#cta` as
+ * separate entries. A fragment does not identify a distinct URL — crawlers
+ * discard everything after the `#` — so those four resolved to the same page
+ * and were ignored. `#cta` had additionally gone stale: that section is `#contact`
+ * since the redesign, so the entry pointed at an anchor that no longer exists.
+ *
+ * Add real entries here if the site ever grows routes of its own.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
-
   return [
-    { url: siteUrl, lastModified, changeFrequency: "weekly", priority: 1.0 },
-    { url: `${siteUrl}/#about`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${siteUrl}/#services`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${siteUrl}/#work`, lastModified, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${siteUrl}/#cta`, lastModified, changeFrequency: "weekly", priority: 0.7 }
+    {
+      url: siteUrl,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 1
+    }
   ];
 }

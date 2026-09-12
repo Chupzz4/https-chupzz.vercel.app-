@@ -1,4 +1,5 @@
 import { ArrowUpRight, Play, ShieldCheck } from "lucide-react";
+import { HeroMetalBackdrop } from "@/components/HeroMetalBackdrop";
 import { HeroVisual } from "@/components/HeroVisual";
 import { MetalButton } from "@/components/ui/MetalButton";
 import { heroStats } from "@/lib/content";
@@ -12,7 +13,7 @@ import { siteConfig } from "@/lib/site";
 export function Hero() {
   return (
     <section id="home" className="relative isolate overflow-hidden bg-obsidian pt-[4.5rem]">
-      <HeroBackdrop />
+      <HeroMetalBackdrop />
 
       <div className="relative mx-auto grid max-w-[86rem] items-center gap-16 px-5 pb-28 pt-20 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:px-10 lg:pb-36 lg:pt-28">
         <div className="rise-in max-w-2xl">
@@ -84,45 +85,5 @@ export function Hero() {
 
       <div className="hairline absolute inset-x-0 bottom-0" />
     </section>
-  );
-}
-
-/**
- * Layered, all decorative: a hairline rule grid masked to fade out toward the
- * bottom, one steel bloom at the upper right, and a vignette that keeps the
- * corners dark so the headline holds contrast at every viewport width.
- */
-function HeroBackdrop() {
-  return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-      <div
-        className="absolute inset-0 bg-hair-grid bg-grid"
-        style={{
-          maskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 55%, transparent 88%)",
-          WebkitMaskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.35) 55%, transparent 88%)"
-        }}
-      />
-      <div
-        className="absolute right-[-10%] top-[-14%] h-[38rem] w-[38rem] rounded-full opacity-60 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(168,182,200,0.22) 0%, rgba(168,182,200,0.07) 38%, transparent 68%)"
-        }}
-      />
-      <div
-        className="absolute bottom-[-20%] left-[-12%] h-[30rem] w-[30rem] rounded-full opacity-50 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(145,152,163,0.14) 0%, transparent 65%)"
-        }}
-      />
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 90% 70% at 50% 40%, transparent 40%, rgba(8,12,17,0.72) 100%)"
-        }}
-      />
-    </div>
   );
 }

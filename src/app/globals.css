@@ -16,6 +16,16 @@
 @layer base {
   :root {
     color-scheme: dark;
+
+    /* The hero's edge lights. Warm champagne, matching the reference — the one
+       warm note left in an otherwise cool system, which is why it lives in a
+       variable: swap these four values for the ice blue
+       (#7EA9DC / rgba(126,169,220,...) / #DCEAFB) and the hero falls back in
+       line with the rest of the palette. Nothing else references them. */
+    --hero-edge: #E8C89A;
+    --hero-edge-soft: rgba(232, 200, 154, 0.42);
+    --hero-edge-glow: rgba(232, 200, 154, 0.4);
+    --hero-edge-hot: #FFF4E2;
   }
 
   * {

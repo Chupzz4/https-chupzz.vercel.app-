@@ -110,12 +110,34 @@ const config: Config = {
         "float-slow": {
           "0%,100%": { transform: "translate3d(0,0,0)" },
           "50%": { transform: "translate3d(0,-12px,0)" }
+        },
+        // Hero backdrop. All three translate only, so each runs on its own
+        // compositor layer without touching layout or paint.
+        "beam-sheen": {
+          "0%": { transform: "translate3d(0,-130%,0)" },
+          "100%": { transform: "translate3d(0,520%,0)" }
+        },
+        "edge-travel": {
+          "0%": { transform: "translate3d(0,-150%,0)" },
+          "100%": { transform: "translate3d(0,820%,0)" }
+        },
+        "rail-travel": {
+          "0%": { transform: "translate3d(-160%,0,0)" },
+          "100%": { transform: "translate3d(950%,0,0)" }
+        },
+        "metal-drift": {
+          "0%,100%": { transform: "translate3d(0,0,0) scale(1.04)" },
+          "50%": { transform: "translate3d(-1.2%,0.8%,0) scale(1.06)" }
         }
       },
       animation: {
         marquee: "marquee 46s linear infinite",
         "flow-pulse": "flow-pulse 2.6s ease-in-out infinite",
-        "float-slow": "float-slow 9s ease-in-out infinite"
+        "float-slow": "float-slow 9s ease-in-out infinite",
+        "beam-sheen": "beam-sheen 7s cubic-bezier(0.45,0,0.55,1) infinite",
+        "edge-travel": "edge-travel 6.5s cubic-bezier(0.4,0,0.6,1) infinite",
+        "rail-travel": "rail-travel 8s cubic-bezier(0.4,0,0.6,1) infinite",
+        "metal-drift": "metal-drift 26s ease-in-out infinite"
       }
     }
   },

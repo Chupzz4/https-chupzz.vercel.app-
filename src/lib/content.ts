@@ -247,13 +247,13 @@ export const metrics = [
 
 export const caseStudies = [
   {
-    type: "Local Service Website",
-    title: "Plumbing Website",
+    type: "Website",
+    title: "Automotive Website",
     copy:
-      "A premium service site with emergency-call CTAs, structured lead forms, trust sections, and CRM-ready inquiry routing.",
+      "A service and performance shop site with appointment booking, a parts storefront, credibility proof, and CRM-ready enquiry routing.",
     metric: "+42% inquiry intent",
     tags: ["Web", "CRM routing"],
-    image: "/images/plumbing-website.png"
+    image: "/images/automotive-website.png"
   },
   {
     type: "Lead Capture Build",

@@ -53,7 +53,7 @@ export function Agents() {
                 return (
                   <li
                     key={agent.name}
-                    className="group relative overflow-hidden bg-onyx px-6 py-7 transition-colors duration-500 hover:bg-graphite sm:px-8"
+                    className="brushed-fill group relative overflow-hidden px-6 py-7 transition-colors duration-500 hover:brightness-125 sm:px-8"
                   >
                     <div
                       aria-hidden="true"

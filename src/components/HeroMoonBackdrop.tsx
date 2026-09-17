@@ -79,14 +79,14 @@ export function HeroMoonBackdrop() {
         className="absolute inset-0 hidden md:block"
         style={{
           background:
-            "linear-gradient(90deg, rgba(8,12,17,0.95) 0%, rgba(8,12,17,0.88) 24%, rgba(8,12,17,0.55) 44%, rgba(8,12,17,0.15) 62%, transparent 78%)"
+            "linear-gradient(90deg, rgba(10,10,12,0.95) 0%, rgba(10,10,12,0.88) 24%, rgba(10,10,12,0.55) 44%, rgba(10,10,12,0.15) 62%, transparent 78%)"
         }}
       />
       <div
         className="absolute inset-0 md:hidden"
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,12,17,0.95) 0%, rgba(8,12,17,0.9) 28%, rgba(8,12,17,0.58) 62%, rgba(8,12,17,0.82) 100%)"
+            "linear-gradient(180deg, rgba(10,10,12,0.95) 0%, rgba(10,10,12,0.9) 28%, rgba(10,10,12,0.58) 62%, rgba(10,10,12,0.82) 100%)"
         }}
       />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-obsidian to-transparent" />

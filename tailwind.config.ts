@@ -14,16 +14,15 @@ const config: Config = {
     extend: {
       opacity,
       colors: {
-        // Surfaces, darkest to lightest, all held at hue ~210 so the ramp reads
-        // as one material rather than four unrelated darks. `onyx` is the brand
-        // navy exactly as specified — and it is the card surface, which is the
-        // largest lit area on the page, so the colour actually gets seen. The
-        // ground below it is the same navy taken down, keeping the depth that a
-        // single flat background would lose.
-        obsidian: "#080C11",
-        carbon: "#0C1219",
-        onyx: "#101820",
-        graphite: "#18232E",
+        // Platinum matte black. Near-neutral charcoal with only a whisper of
+        // cool in it — enough to sit with the chrome accent, not enough to read
+        // as a second hue the way the previous navy ramp did. Matte black is
+        // never #000: the lift is what lets the sheens and the fleck overlay
+        // catch light at all, which is the whole point of the finish.
+        obsidian: "#0A0A0C",
+        carbon: "#101114",
+        onyx: "#171A1E",
+        graphite: "#20232A",
 
         // Type. Neutral-cool rather than the warm ivory this started with —
         // against chrome a warm white reads as a second, competing hue.

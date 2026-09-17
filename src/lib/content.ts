@@ -245,15 +245,26 @@ export const metrics = [
 
 /* ---- Case studies ------------------------------------------------------ */
 
+/**
+ * Every entry carries `images` as an array so the card has one code path. A
+ * single-image entry renders a still; more than one renders a slider inside the
+ * card. The Websites entry collects the individual site builds that would
+ * otherwise each need their own near-identical card.
+ */
 export const caseStudies = [
   {
     type: "Website",
-    title: "Automotive Website",
+    title: "Websites",
     copy:
-      "A service and performance shop site with appointment booking, a parts storefront, credibility proof, and CRM-ready enquiry routing.",
-    metric: "+42% inquiry intent",
-    tags: ["Web", "CRM routing"],
-    image: "/images/automotive-website.png"
+      "Conversion-focused service sites across automotive, contracting, virtual tours, and home renovation — each with quote capture, credibility proof, and CRM-ready enquiry routing.",
+    metric: "4 builds shipped",
+    tags: ["Web", "Lead capture"],
+    images: [
+      "/images/automotive-website.png",
+      "/images/construction-website.png",
+      "/images/virtual-tour-website.png",
+      "/images/renovation-website.png"
+    ]
   },
   {
     type: "Lead Capture Build",
@@ -262,7 +273,7 @@ export const caseStudies = [
       "Storm-damage landing pages, estimate funnels, automated follow-up, and segmented pipeline stages behind every submission.",
     metric: "2.1x follow-up speed",
     tags: ["Funnel", "Automation"],
-    image: "/images/roofing-website.png"
+    images: ["/images/roofing-website.png"]
   },
   {
     type: "Contractor Brand System",
@@ -271,7 +282,7 @@ export const caseStudies = [
       "Project gallery, quote request flow, credibility proof, and appointment scheduling wired directly to CRM tasks.",
     metric: "35% more quote starts",
     tags: ["Web", "Scheduling"],
-    image: "/images/contractor-website.png"
+    images: ["/images/contractor-website.png"]
   },
   {
     type: "Offer Funnel",
@@ -280,7 +291,7 @@ export const caseStudies = [
       "Opt-in page, scheduler, nurture sequence, retargeting hooks, and analytics-ready conversion events end to end.",
     metric: "Lower lead leakage",
     tags: ["Funnel", "Analytics"],
-    image: "/images/funnel-system.png"
+    images: ["/images/funnel-system.png"]
   },
   {
     type: "Operations Automation",
@@ -289,7 +300,7 @@ export const caseStudies = [
       "n8n workflows for enrichment, AI summaries, internal alerts, deal updates, and drafted responses across the pipeline.",
     metric: "8+ hours saved weekly",
     tags: ["n8n", "AI agents"],
-    image: "/images/ai-automation.png"
+    images: ["/images/ai-automation.png"]
   }
 ];
 
@@ -375,20 +386,20 @@ export const testimonials = [
   {
     quote:
       "The website and automation flow made our follow-up feel instant. Leads no longer sit untouched, and the team knows exactly what to do next.",
-    name: "Service Business Owner",
-    role: "Home Services"
+    name: "Rich Sambora",
+    role: "Owner, Home Services"
   },
   {
     quote:
       "Our funnel, CRM, and appointment workflow finally work together. It feels like we upgraded the entire backend of the business.",
-    name: "Growth Consultant",
-    role: "B2B Services"
+    name: "Scott Hill",
+    role: "Founder, B2B Services"
   },
   {
     quote:
       "Fast, organised, and genuinely technical. The automations saved our admin team time within the first week.",
-    name: "Operations Lead",
-    role: "Local Contractor"
+    name: "Lian Back",
+    role: "CEO, Local Contractor"
   }
 ];
 

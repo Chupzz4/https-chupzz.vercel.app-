@@ -27,13 +27,13 @@
     scroll-behavior: smooth;
     /* Clears the 4.5rem fixed header so anchor targets don't land underneath it. */
     scroll-padding-top: 6rem;
-    background: #080c11;
+    background: #0a0a0c;
   }
 
   body {
     margin: 0;
     min-height: 100vh;
-    background: #080c11;
+    background: #0a0a0c;
     color: #f2f5fa;
     font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     text-rendering: optimizeLegibility;
@@ -77,7 +77,7 @@
     border-radius: 0.375rem;
     background: #c6d1de;
     padding: 0.75rem 1.25rem;
-    color: #080c11;
+    color: #0a0a0c;
     font-size: 0.8125rem;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -120,12 +120,28 @@
     position: relative;
     border-radius: 1rem;
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.012) 40%, transparent 100%),
-      #101820;
+      /* The specular. One broad elliptical bloom sitting high and left of
+         centre, the way a rolled metal panel catches a single light source —
+         not centred, because a centred highlight reads as a vignette. */
+      radial-gradient(
+        ellipse 95% 150% at 40% 26%,
+        rgba(255, 255, 255, 0.11) 0%,
+        rgba(255, 255, 255, 0.035) 36%,
+        rgba(255, 255, 255, 0) 72%
+      ),
+      /* The brush. Horizontal striations, opacity baked into the SVG so this
+         needs no blend layer over it — a fixed, blended, full-viewport overlay
+         is what cost this page 134s of blocking time in an earlier life. */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23b)' opacity='0.16'/%3E%3C/svg%3E"),
+      /* The stock. A vertical ramp, lighter at the top edge, so the panel has a
+         direction to it before any highlight lands. */
+      linear-gradient(180deg, #1b1f24 0%, #171a1e 48%, #121417 100%);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.055),
-      0 30px 60px -34px rgba(0, 0, 0, 0.9);
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.14),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.035),
+      0 30px 60px -34px rgba(0, 0, 0, 0.92);
   }
+
 
   .luxe-panel::before {
     content: "";
@@ -142,6 +158,18 @@
     pointer-events: none;
   }
 
+
+  /* Brushed stock without the specular — for opaque cells that sit inside a
+     panel, where the panel already owns the highlight. Those cells are opaque
+     by necessity: the grids they live in draw their dividers by showing a
+     tinted parent through a 1px gap, so a transparent cell would erase the
+     dividers rather than reveal the brush. This gives them the metal instead. */
+  .brushed-fill {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.006 0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23b)' opacity='0.16'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, #1a1d22 0%, #16191d 55%, #131518 100%);
+  }
+
   /* Same construction, chrome-lit — the one emphasised card per section. */
   .luxe-panel-steel::before {
     background: linear-gradient(160deg, rgba(220, 230, 243, 0.5), rgba(168, 182, 200, 0.16) 42%, transparent 72%);
@@ -149,7 +177,7 @@
 
   /* Glass, used sparingly: floating header and overlay chrome only. */
   .luxe-glass {
-    background: rgba(12, 18, 25, 0.66);
+    background: rgba(12, 12, 14, 0.68);
     backdrop-filter: blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
   }

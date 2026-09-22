@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeader } from "@/components/SectionHeader";
 import { services } from "@/lib/content";
@@ -29,12 +28,7 @@ export function Services() {
       <div className="relative mx-auto max-w-[86rem] px-5 sm:px-8 lg:px-10">
         <SectionHeader
           eyebrow="Capabilities"
-          title={
-            <>
-              Systems for acquisition, conversion,
-              <br className="hidden sm:block" /> and everything after the sale.
-            </>
-          }
+          title="Systems for acquisition, conversion, and everything after the sale."
           copy="Each engagement is scoped as a system, not a deliverable. Built to be handed over, documented, and operated by your team."
         />
 
@@ -80,6 +74,8 @@ export function Services() {
                       <Icon size={21} strokeWidth={1.6} />
                     </span>
 
+                    {/* No arrow on the other cards: they are not links, and an
+                        up-right arrow promised a destination that was not there. */}
                     {service.toolLogo ? (
                       <span className="inline-flex items-center gap-2 rounded-full border border-steel/25 bg-steel/8 py-1 pl-1 pr-3.5">
                         <span className="relative grid h-6 w-6 place-items-center overflow-hidden rounded-full bg-ivory">
@@ -95,12 +91,7 @@ export function Services() {
                           Built on {service.toolLogo.name}
                         </span>
                       </span>
-                    ) : (
-                      <ArrowUpRight
-                        size={17}
-                        className="shrink-0 text-ash transition duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-steel"
-                      />
-                    )}
+                    ) : null}
                   </div>
 
                   <h3

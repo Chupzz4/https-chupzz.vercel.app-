@@ -29,12 +29,7 @@ export function AutomationFlow() {
       <div className="relative mx-auto max-w-[86rem] px-5 sm:px-8 lg:px-10">
         <SectionHeader
           eyebrow="Automation Flow"
-          title={
-            <>
-              What happens between a submission
-              <br className="hidden sm:block" /> and a booked call.
-            </>
-          }
+          title="What happens between a submission and a booked call."
           copy="Every stage below runs without a person in the loop. The handoff to a human happens once, at the point where a human actually adds value."
         />
 

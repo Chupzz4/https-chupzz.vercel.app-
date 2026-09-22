@@ -1,3 +1,6 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -57,32 +60,18 @@ const nextConfig = {
     qualities: [75, 88],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com'
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.imgur.com'
-      },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com'
-      },
-      {
-        protocol: 'https',
-        hostname: 'raw.githubusercontent.com'
-      },
-      {
-        protocol: 'https',
-        hostname: 'placehold.co'
-      }
-    ]
+    // Same reasoning as the public/ headers above: screenshots get replaced
+    // under the same filename, and a year-long TTL on the optimised copies
+    // kept returning visitors on the old image long after the swap.
+    minimumCacheTTL: 60 * 60 * 24, // 1 day
+    // No remotePatterns and no SVG: every image is a local raster in public/.
+    // The old allowlist (unsplash, imgur, cloudinary, GitHub raw, placehold)
+    // was unused and let anyone push those hosts' images through this
+    // project's optimiser and its quota.
   },
+  // A stray package-lock.json in the user's home folder made Next guess that
+  // directory as the workspace root. Pin it to this project.
+  outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
   staticPageGenerationTimeout: 120,
 };
 

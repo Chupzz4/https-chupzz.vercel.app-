@@ -31,6 +31,27 @@ export function Navbar() {
     };
   }, [open]);
 
+  // The toggle disappears at lg, so a menu left open while the layout crosses
+  // into the desktop bar (a tablet rotating to landscape) kept the body
+  // scroll-locked with nothing on screen to close it. Escape closes it too.
+  useEffect(() => {
+    if (!open) return;
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => {
+      if (desktop.matches) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    onChange();
+    desktop.addEventListener("change", onChange);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      desktop.removeEventListener("change", onChange);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
     <header
       className={cn(

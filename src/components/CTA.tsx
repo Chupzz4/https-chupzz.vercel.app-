@@ -92,9 +92,12 @@ export function CTA() {
       <div className="relative mx-auto max-w-[86rem] px-5 sm:px-8 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <Eyebrow align="center">Start Here</Eyebrow>
-          <h2 className="mt-7 font-display text-[2.5rem] font-normal leading-[1.08] tracking-[-0.02em] text-ivory sm:text-[3.5rem] lg:text-[4rem]">
-            Let&rsquo;s build the system
-            <br />
+          {/* The break only applies from sm up: forced on phones it split the
+              line into "system" and "on." orphans. The explicit {" "} keeps the
+              words apart when the <br> is hidden ("systemyour" otherwise). */}
+          <h2 className="mt-7 text-balance font-display text-[2.5rem] font-normal leading-[1.08] tracking-[-0.02em] text-ivory sm:text-[3.5rem] lg:text-[4rem]">
+            Let&rsquo;s build the system{" "}
+            <br className="hidden sm:block" />
             <span className="text-metal-steel">your business runs on.</span>
           </h2>
           <p className="mx-auto mt-7 max-w-xl text-pretty text-[0.9375rem] leading-[1.9] text-silver">

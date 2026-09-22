@@ -29,7 +29,7 @@ export function SectionHeader({
       <Eyebrow align={align}>{eyebrow}</Eyebrow>
       <h2
         className={cn(
-          "mt-6 font-display text-[2rem] font-normal leading-[1.12] tracking-[-0.015em] text-ivory",
+          "mt-6 text-balance font-display text-[2rem] font-normal leading-[1.12] tracking-[-0.015em] text-ivory",
           "sm:text-[2.75rem] lg:text-[3.25rem]"
         )}
       >

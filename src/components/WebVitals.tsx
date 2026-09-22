@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react';
 
-// Report Web Vitals to Google Analytics
+// Logs Core Web Vitals to the console during development. Nothing is sent
+// anywhere; layout.tsx only renders this when NODE_ENV is "development".
 export function WebVitals() {
   useEffect(() => {
     // Console diagnostics only. In production the 'event' observer below ran

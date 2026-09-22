@@ -52,6 +52,8 @@ export const metadata: Metadata = {
       "Websites, funnels, and AI automation systems that help businesses save time, generate more leads, and improve conversions.",
     type: "website",
     locale: "en_US",
+    url: siteUrl,
+    siteName: siteConfig.name,
     images: [
       {
         url: "/og-image.png?v=2",
@@ -65,7 +67,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "GTM & Automation Engineer",
-    description: "Build scalable AI automation systems for your business",
+    description:
+      "Websites, funnels, and AI automation systems that help businesses save time, generate more leads, and improve conversions.",
     images: ["/og-image.png?v=2"]
   },
   robots: {
@@ -135,7 +138,9 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <WebVitals />
+        {/* Dev-only console diagnostics; gated here so the component stays out
+            of the production bundle instead of shipping as a no-op. */}
+        {process.env.NODE_ENV === "development" ? <WebVitals /> : null}
         {children}
         <script
           type="application/ld+json"
@@ -152,7 +157,9 @@ export default function RootLayout({
               name: siteConfig.name,
               url: siteUrl,
               sameAs: socials.map((social) => social.href),
-              image: absoluteUrl("/logo.png"),
+              // A Person's image should be the person; the CZ mark stays the
+              // site logo, not this.
+              image: absoluteUrl("/images/christian-portrait.webp"),
               jobTitle: siteConfig.title,
               email: `mailto:${siteConfig.email}`,
               description:

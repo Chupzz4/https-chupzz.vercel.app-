@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ArrowUpRight, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { useCallback, useEffect, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { SectionHeader } from "@/components/SectionHeader";
 import { caseStudies } from "@/lib/content";
@@ -12,6 +12,15 @@ type Opened = { card: number; slide: number };
 
 export function Portfolio() {
   const [opened, setOpened] = useState<Opened | null>(null);
+  // Whatever had focus when the preview opened gets it back on close, so a
+  // keyboard user lands on the card they came from, not the top of the page.
+  const trigger = useRef<HTMLElement | null>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+
+  const open = useCallback((card: number, slide: number) => {
+    trigger.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setOpened({ card, slide });
+  }, []);
   const close = useCallback(() => setOpened(null), []);
 
   const active = opened ? caseStudies[opened.card] : null;
@@ -23,6 +32,12 @@ export function Portfolio() {
     if (!opened) return;
     const onKey = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") close();
+      // The close button is the dialog's only control, so Tab stays on it
+      // instead of walking into the page hidden behind the backdrop.
+      if (event.key === "Tab") {
+        event.preventDefault();
+        closeButton.current?.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -32,14 +47,23 @@ export function Portfolio() {
     };
   }, [opened, close]);
 
+  useEffect(() => {
+    if (opened) return;
+    trigger.current?.focus({ preventScroll: true });
+    trigger.current = null;
+  }, [opened]);
+
   return (
     <section id="work" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
       <div className="relative mx-auto max-w-[86rem] px-5 sm:px-8 lg:px-10">
         <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between sm:mb-20">
+          {/* `cn` concatenates without resolving conflicts, so plain mb-0 and
+              max-w-2xl lost to SectionHeader's own mb-14 sm:mb-20 max-w-3xl and
+              pushed the note beside the title 56-80px out of line. */}
           <SectionHeader
             eyebrow="Selected Work"
             align="left"
-            className="mb-0 max-w-2xl"
+            className="!mb-0 !max-w-2xl"
             title={
               <>
                 Systems built, shipped,
@@ -63,7 +87,7 @@ export function Portfolio() {
               <CaseStudyCard
                 item={item}
                 feature={index < 2}
-                onOpen={(slide) => setOpened({ card: index, slide })}
+                onOpen={(slide) => open(index, slide)}
               />
             </Reveal>
           ))}
@@ -92,6 +116,7 @@ export function Portfolio() {
             />
           </div>
           <button
+            ref={closeButton}
             type="button"
             onClick={close}
             autoFocus
@@ -118,40 +143,30 @@ function CaseStudyCard({ item, feature, onOpen }: CaseStudyCardProps) {
   const isSlider = count > 1;
   const opens = item.lightbox !== false;
 
-  // The whole card opens the lightbox, so every control inside it has to stop
-  // the click from bubbling — otherwise paging the slider would also open a
-  // preview of the slide you were leaving.
-  const step = (event: MouseEvent, delta: number) => {
-    event.stopPropagation();
-    setSlide((current) => (current + delta + count) % count);
-  };
-
-  // A card kept out of the lightbox stays a plain article, so it neither looks
-  // nor announces itself as something that opens.
-  const interaction = opens
-    ? {
-        role: "button",
-        tabIndex: 0,
-        "aria-label": `${item.title}, open preview`,
-        onClick: () => onOpen(slide),
-        onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            onOpen(slide);
-          }
-        }
-      }
-    : {};
+  const step = (delta: number) => setSlide((current) => (current + delta + count) % count);
 
   return (
     <article
-      {...interaction}
       className={cn(
         "luxe-panel group relative flex h-full flex-col overflow-hidden",
-        "transition duration-500 hover:-translate-y-1.5 hover:shadow-lift",
-        opens && "cursor-pointer"
+        "transition duration-500 hover:-translate-y-1.5 hover:shadow-lift"
       )}
     >
+      {/* The preview opens from one button stretched over the whole card. It
+          used to be the card itself (role="button") with the slider controls
+          inside it, and a button's children are presentational, so screen
+          readers could not reach the arrows or dots. The controls now sit above
+          this button (z-10) as siblings. A card kept out of the lightbox has no
+          button at all, so it neither looks nor announces itself as openable. */}
+      {opens ? (
+        <button
+          type="button"
+          onClick={() => onOpen(slide)}
+          aria-label={`${item.title}, open preview`}
+          className="absolute inset-0 z-[5] cursor-pointer rounded-[inherit] focus-visible:[outline-offset:-3px]"
+        />
+      ) : null}
+
       <div className={cn("relative overflow-hidden", feature ? "h-56" : "h-44")}>
         {/* One track translated by whole slides. Single-image cards run the same
             path with a track of one, so there is no second rendering branch. */}
@@ -190,23 +205,20 @@ function CaseStudyCard({ item, feature, onOpen }: CaseStudyCardProps) {
 
         {isSlider ? (
           <>
-            <SliderButton side="left" label="Previous build" onClick={(e) => step(e, -1)} />
-            <SliderButton side="right" label="Next build" onClick={(e) => step(e, 1)} />
+            <SliderButton side="left" label="Previous build" onClick={() => step(-1)} />
+            <SliderButton side="right" label="Next build" onClick={() => step(1)} />
 
-            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5">
+            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center">
               {item.images.map((src, i) => (
                 <button
                   key={src}
                   type="button"
                   aria-label={`Show build ${i + 1} of ${count}`}
                   aria-current={i === slide ? "true" : undefined}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setSlide(i);
-                  }}
-                  // A 2px dot is far below the 24px minimum touch target, so the
-                  // button stays finger-sized and only its inner span is small.
-                  className="grid h-6 w-4 place-items-center"
+                  onClick={() => setSlide(i)}
+                  // A small dot is far below the 24px minimum touch target, so the
+                  // button stays a full 24px square and only its inner span is small.
+                  className="grid h-6 w-6 place-items-center"
                 >
                   <span
                     className={cn(
@@ -266,7 +278,7 @@ function SliderButton({
 }: {
   side: "left" | "right";
   label: string;
-  onClick: (event: MouseEvent) => void;
+  onClick: () => void;
 }) {
   return (
     <button
@@ -277,9 +289,10 @@ function SliderButton({
         "absolute top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full",
         "border border-white/15 bg-obsidian/70 text-ivory backdrop-blur-sm",
         "transition duration-300 hover:border-steel/50 hover:bg-obsidian/90",
-        // Hidden until the card is hovered on pointer devices, but always
-        // present on touch, where there is no hover to reveal them.
-        "opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100",
+        // Hidden until the card is hovered, but only where hovering exists.
+        // Gating on width (sm:) hid them on tablets, which are wide enough to
+        // pass the breakpoint yet have no hover to reveal them.
+        "opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 focus-visible:opacity-100",
         side === "left" ? "left-3" : "right-3"
       )}
     >

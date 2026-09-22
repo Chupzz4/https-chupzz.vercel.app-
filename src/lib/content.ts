@@ -239,7 +239,7 @@ export const metrics = [
     value: "97",
     unit: "%",
     label: "Routing accuracy",
-    copy: "The right record reaches the right owner at the right stage, every time."
+    copy: "The right record reaches the right owner at the right stage, without anyone sorting it by hand."
   }
 ];
 
@@ -306,7 +306,7 @@ export const caseStudies = [
     title: "GTM Systems & Outreach",
     copy:
       "Lead sourcing and enrichment in Clay, cold email sequences in Smartlead, and LinkedIn outreach in HeyReach, wired into one outbound engine that keeps the pipeline full.",
-    metric: "8K+ leads enriched",
+    metric: "50K+ leads enriched",
     tags: ["Clay", "Outreach"],
     images: [
       "/images/gtm-1.webp",
@@ -320,9 +320,9 @@ export const caseStudies = [
     type: "Operations Automation",
     title: "AI Automation Suite",
     copy:
-      "n8n workflows for enrichment, AI summaries, internal alerts, deal updates, and drafted responses across the pipeline.",
+      "n8n and Zapier workflows for enrichment, AI reply handling, appointment recovery, internal alerts, and drafted outreach across the pipeline.",
     metric: "8+ hours saved weekly",
-    tags: ["n8n", "AI agents"],
+    tags: ["n8n", "Zapier", "AI agents"],
     images: [
       "/images/automation-1.webp",
       "/images/automation-2.webp",

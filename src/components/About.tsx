@@ -30,7 +30,7 @@ export function About() {
               <div className="relative aspect-[728/1297] overflow-hidden rounded-xl bg-graphite">
                 <Image
                   src="/images/christian-portrait.webp"
-                  alt="Christian Capistrano, technical VA and AI automation specialist"
+                  alt="Christian Capistrano, GTM and automation engineer"
                   fill
                   quality={88}
                   sizes="(min-width: 1024px) 352px, (min-width: 640px) 352px, 80vw"

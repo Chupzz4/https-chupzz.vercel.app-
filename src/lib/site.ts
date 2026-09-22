@@ -14,7 +14,7 @@ export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://chupzz-ai.v
 
 export const siteConfig = {
   name: "Christian Capistrano",
-  title: "Premium Tech VA & AI Automation Specialist",
+  title: "GTM & Automation Engineer",
   email: "capistranochristianpaul@gmail.com",
   calendly: "https://calendly.com/capistranochristianpaul/30min"
 } as const;

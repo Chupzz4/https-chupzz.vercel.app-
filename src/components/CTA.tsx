@@ -17,7 +17,7 @@ const CALENDLY_URL = `${siteConfig.calendly}?hide_event_type_details=1&hide_gdpr
 const callIncludes = [
   "A walkthrough of your current stack and where it leaks",
   "The two or three automations worth building first",
-  "A scoped build plan and honest timeline — yours to keep"
+  "A scoped build plan and honest timeline, yours to keep"
 ];
 
 /**
@@ -99,7 +99,7 @@ export function CTA() {
           </h2>
           <p className="mx-auto mt-7 max-w-xl text-pretty text-[0.9375rem] leading-[1.9] text-silver">
             One call to map the offer, the stack, and the highest-value automation to build first.
-            No pitch deck, no obligation — you leave with the plan either way.
+            No pitch deck, no obligation. You leave with the plan either way.
           </p>
         </div>
 

@@ -65,7 +65,7 @@ export const integrations = [
 
 // Filenames carry spaces and inconsistent casing, and the display name is
 // rarely the filename, so both mappings stay explicit rather than derived.
-export const integrationLogo = (name: string) => "/images/" + encodeURIComponent(name) + ".png";
+export const integrationLogo = (name: string) => "/images/" + encodeURIComponent(name) + ".webp";
 
 export const integrationLabels: Record<string, string> = {
   N8N: "n8n",
@@ -105,7 +105,7 @@ export const services: Service[] = [
       "Clay becomes the data engine of your go-to-market. ICP list building, waterfall enrichment, AI research agents, intent and hiring signals, and lead scoring feed straight into your CRM, sequencer, and workflows, so sales works the right accounts at the right time.",
     points: ["Waterfall enrichment", "AI research agents", "Intent and hiring signals", "Scored, routed handoff"],
     featured: true,
-    toolLogo: { src: "/images/Clay.png", name: "Clay" }
+    toolLogo: { src: "/images/Clay.webp", name: "Clay" }
   },
   {
     icon: Bot,
@@ -248,50 +248,73 @@ export const metrics = [
 /**
  * Every entry carries `images` as an array so the card has one code path. A
  * single-image entry renders a still; more than one renders a slider inside the
- * card. The Websites entry collects the individual site builds that would
- * otherwise each need their own near-identical card.
+ * card. The Websites and Funnels entries collect the individual builds that
+ * would otherwise each need their own near-identical card.
+ *
+ * `lightbox: false` keeps a card out of the full-size preview; the CRM entry
+ * uses it because its screenshots come from a live client account.
  */
 export const caseStudies = [
   {
     type: "Website",
     title: "Websites",
     copy:
-      "Conversion-focused service sites across automotive, contracting, virtual tours, and home renovation — each with quote capture, credibility proof, and CRM-ready enquiry routing.",
+      "Conversion-focused service sites across automotive, contracting, virtual tours, and home renovation. Each has quote capture, credibility proof, and CRM-ready enquiry routing.",
     metric: "4 builds shipped",
     tags: ["Web", "Lead capture"],
     images: [
-      "/images/automotive-website.png",
-      "/images/construction-website.png",
-      "/images/virtual-tour-website.png",
-      "/images/renovation-website.png"
+      "/images/automotive-website.webp",
+      "/images/construction-website.webp",
+      "/images/virtual-tour-website.webp",
+      "/images/renovation-website.webp"
     ]
   },
   {
     type: "Lead Capture Build",
-    title: "Roofing Website",
+    title: "Funnels & Landing Pages",
     copy:
-      "Storm-damage landing pages, estimate funnels, automated follow-up, and segmented pipeline stages behind every submission.",
-    metric: "2.1x follow-up speed",
+      "Offer funnels and landing pages across AI training, tax resolution, M&A advisory, business brokerage, and B2B growth. Each is built around one offer, one clear call to action, and lead capture ready for follow-up.",
+    metric: "6 builds shipped",
     tags: ["Funnel", "Automation"],
-    images: ["/images/roofing-website.png"]
+    images: [
+      "/images/funnel-1.webp",
+      "/images/funnel-2.webp",
+      "/images/funnel-3.webp",
+      "/images/funnel-4.webp",
+      "/images/funnel-5.webp",
+      "/images/funnel-6.webp"
+    ]
   },
   {
-    type: "Contractor Brand System",
-    title: "Contractor Website",
+    type: "CRM Architecture",
+    title: "GHL CRM Management",
     copy:
-      "Project gallery, quote request flow, credibility proof, and appointment scheduling wired directly to CRM tasks.",
-    metric: "35% more quote starts",
-    tags: ["Web", "Scheduling"],
-    images: ["/images/contractor-website.png"]
+      "Day-to-day GoHighLevel management across deal pipelines, the team inbox, calendars, contact lists, and the social planner. Records stay tagged, routed, and moving.",
+    metric: "25K+ contacts managed",
+    tags: ["GoHighLevel", "CRM"],
+    images: [
+      "/images/crm-1.webp",
+      "/images/crm-2.webp",
+      "/images/crm-3.webp",
+      "/images/crm-4.webp",
+      "/images/crm-5.webp"
+    ],
+    lightbox: false
   },
   {
-    type: "Offer Funnel",
-    title: "Funnel System",
+    type: "GTM Engineering",
+    title: "GTM Systems & Outreach",
     copy:
-      "Opt-in page, scheduler, nurture sequence, retargeting hooks, and analytics-ready conversion events end to end.",
-    metric: "Lower lead leakage",
-    tags: ["Funnel", "Analytics"],
-    images: ["/images/funnel-system.png"]
+      "Lead sourcing and enrichment in Clay, cold email sequences in Smartlead, and LinkedIn outreach in HeyReach, wired into one outbound engine that keeps the pipeline full.",
+    metric: "8K+ leads enriched",
+    tags: ["Clay", "Outreach"],
+    images: [
+      "/images/gtm-1.webp",
+      "/images/gtm-2.webp",
+      "/images/gtm-3.webp",
+      "/images/gtm-4.webp",
+      "/images/gtm-5.webp"
+    ]
   },
   {
     type: "Operations Automation",
@@ -300,7 +323,14 @@ export const caseStudies = [
       "n8n workflows for enrichment, AI summaries, internal alerts, deal updates, and drafted responses across the pipeline.",
     metric: "8+ hours saved weekly",
     tags: ["n8n", "AI agents"],
-    images: ["/images/ai-automation.png"]
+    images: [
+      "/images/automation-1.webp",
+      "/images/automation-2.webp",
+      "/images/automation-3.webp",
+      "/images/automation-4.webp",
+      "/images/automation-5.webp",
+      "/images/automation-6.webp"
+    ]
   }
 ];
 

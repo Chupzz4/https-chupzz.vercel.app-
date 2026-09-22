@@ -24,11 +24,11 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Premium Tech VA & AI Automation Specialist | Christian Capistrano",
+  title: "GTM & Automation Engineer | Christian Capistrano",
   description:
     "AI automation, GTM engineering, websites, funnels, and CRM systems for businesses that want their backend to run itself. Clay, n8n, and GoHighLevel builds with documented handoff.",
   keywords: [
-    "Technical Virtual Assistant",
+    "GTM & Automation Engineer",
     "AI Automation Specialist",
     "GTM Engineer",
     "Clay GTM Engineering",
@@ -47,26 +47,26 @@ export const metadata: Metadata = {
   creator: "Christian Capistrano",
   publisher: "Christian Capistrano",
   openGraph: {
-    title: "Premium Tech VA & AI Automation Specialist",
+    title: "GTM & Automation Engineer",
     description:
       "Websites, funnels, and AI automation systems that help businesses save time, generate more leads, and improve conversions.",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.png?v=2",
         width: 1200,
         height: 630,
-        alt: "Christian Capistrano - Tech VA & AI Automation Specialist",
+        alt: "Christian Capistrano, GTM & Automation Engineer",
         type: "image/png"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Premium Tech VA & AI Automation Specialist",
+    title: "GTM & Automation Engineer",
     description: "Build scalable AI automation systems for your business",
-    images: ["/og-image.png"]
+    images: ["/og-image.png?v=2"]
   },
   robots: {
     index: true,
@@ -156,7 +156,7 @@ export default function RootLayout({
               jobTitle: siteConfig.title,
               email: `mailto:${siteConfig.email}`,
               description:
-                "Technical Virtual Assistant and GTM Engineer specializing in Clay-powered go-to-market systems, AI automation, website development, and business systems",
+                "GTM and automation engineer specializing in Clay-powered go-to-market systems, AI automation, website development, and business systems",
               knowsAbout: [
                 "GTM Engineering",
                 "Clay",

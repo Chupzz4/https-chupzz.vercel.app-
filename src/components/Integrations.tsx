@@ -17,9 +17,9 @@ export function Integrations() {
   return (
     <section className="relative overflow-hidden border-y border-white/6 bg-carbon py-16 sm:py-20">
       <div className="mx-auto mb-10 max-w-[86rem] px-5 sm:px-8 lg:px-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <Eyebrow>Integrated Stack</Eyebrow>
-          <p className="max-w-md text-[0.8125rem] leading-[1.8] text-ash sm:text-right">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <Eyebrow align="center">Integrated Stack</Eyebrow>
+          <p className="max-w-xl text-balance text-[0.8125rem] leading-[1.8] text-ash">
             The platforms these systems are built on, connected, and maintained across.
           </p>
         </div>

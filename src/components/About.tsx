@@ -74,7 +74,7 @@ export function About() {
             lead generation workflows, booking, and follow-up operations.
           </p>
           <p className="mt-4 max-w-xl text-pretty text-[0.9375rem] leading-[1.9] text-silver">
-            The objective never changes — a clean digital engine that captures demand, keeps every lead
+            The objective never changes: a clean digital engine that captures demand, keeps every lead
             moving, and returns your team&rsquo;s attention to the work that compounds.
           </p>
 

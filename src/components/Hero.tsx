@@ -25,7 +25,7 @@ export function Hero() {
               <ShieldCheck size={11} className="text-steel-light" strokeWidth={2.2} />
             </span>
             <span className="text-[0.625rem] font-semibold uppercase tracking-wider text-platinum">
-              Premium Tech VA &amp; AI Automation
+              GTM &amp; Automation Engineer
             </span>
           </div>
 
@@ -43,7 +43,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-7 max-w-xl text-pretty text-[0.9375rem] leading-[1.9] text-silver sm:text-base">
-            I design and build the automation layer behind growing companies — websites, funnels, CRM
+            I design and build the automation layer behind growing companies: websites, funnels, CRM
             architecture, and AI agents that capture demand, qualify it, and move it forward without
             anyone chasing it manually.
           </p>

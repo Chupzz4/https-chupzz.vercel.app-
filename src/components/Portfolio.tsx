@@ -84,7 +84,7 @@ export function Portfolio() {
           >
             <Image
               src={activeSrc}
-              alt={`${active.title} — full preview`}
+              alt={`${active.title}, full preview`}
               width={1600}
               height={1000}
               priority
@@ -116,6 +116,7 @@ function CaseStudyCard({ item, feature, onOpen }: CaseStudyCardProps) {
   const [slide, setSlide] = useState(0);
   const count = item.images.length;
   const isSlider = count > 1;
+  const opens = item.lightbox !== false;
 
   // The whole card opens the lightbox, so every control inside it has to stop
   // the click from bubbling — otherwise paging the slider would also open a
@@ -125,21 +126,30 @@ function CaseStudyCard({ item, feature, onOpen }: CaseStudyCardProps) {
     setSlide((current) => (current + delta + count) % count);
   };
 
+  // A card kept out of the lightbox stays a plain article, so it neither looks
+  // nor announces itself as something that opens.
+  const interaction = opens
+    ? {
+        role: "button",
+        tabIndex: 0,
+        "aria-label": `${item.title}, open preview`,
+        onClick: () => onOpen(slide),
+        onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onOpen(slide);
+          }
+        }
+      }
+    : {};
+
   return (
     <article
-      role="button"
-      tabIndex={0}
-      aria-label={`${item.title} — open preview`}
-      onClick={() => onOpen(slide)}
-      onKeyDown={(event: KeyboardEvent<HTMLElement>) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onOpen(slide);
-        }
-      }}
+      {...interaction}
       className={cn(
-        "luxe-panel group relative flex h-full cursor-pointer flex-col overflow-hidden",
-        "transition duration-500 hover:-translate-y-1.5 hover:shadow-lift"
+        "luxe-panel group relative flex h-full flex-col overflow-hidden",
+        "transition duration-500 hover:-translate-y-1.5 hover:shadow-lift",
+        opens && "cursor-pointer"
       )}
     >
       <div className={cn("relative overflow-hidden", feature ? "h-56" : "h-44")}>
@@ -153,7 +163,7 @@ function CaseStudyCard({ item, feature, onOpen }: CaseStudyCardProps) {
             <div key={src} className="relative h-full w-full shrink-0">
               <Image
                 src={src}
-                alt={isSlider ? `${item.title} — build ${i + 1} of ${count}` : item.title}
+                alt={isSlider ? `${item.title}, build ${i + 1} of ${count}` : item.title}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover object-top transition duration-700 group-hover:scale-[1.04]"
@@ -221,10 +231,12 @@ function CaseStudyCard({ item, feature, onOpen }: CaseStudyCardProps) {
           >
             {item.title}
           </h3>
-          <ArrowUpRight
-            size={17}
-            className="mt-1 shrink-0 text-ash transition duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-steel"
-          />
+          {opens ? (
+            <ArrowUpRight
+              size={17}
+              className="mt-1 shrink-0 text-ash transition duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-steel"
+            />
+          ) : null}
         </div>
 
         <p className="mt-3 text-[0.8125rem] leading-[1.8] text-silver">{item.copy}</p>
